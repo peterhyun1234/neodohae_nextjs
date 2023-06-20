@@ -42,7 +42,7 @@ const Loading = Styled.div`
 `
 const LoadingImg = Styled(Image)`
     width: 200px;
-    height: 200px;
+    height: 250px;
 `
 const LoadingText = Styled.div`
     width: 100%;
