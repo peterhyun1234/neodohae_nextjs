@@ -60,6 +60,7 @@ const WrapBox = Styled.div`
     padding-top: calc(80px + 100px);
     padding-bottom: 100px;
     min-height: 100vh;
+    background-color: #FAFAFF;
 `
 const FooterDiv = Styled.div`
     padding: 20px;
