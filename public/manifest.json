@@ -1,0 +1,13 @@
+{
+  "background_color": "#ffffff",
+  "dir": "ltr",
+  "lang": "en",
+  "name": "너도해",
+  "display": "standalone",
+  "orientation": "any",
+  "start_url": "/",
+  "short_name": "너도해",
+  "theme_color": "#ffffff",
+  "prefer_related_applications": true,
+  "scope": "/"
+}

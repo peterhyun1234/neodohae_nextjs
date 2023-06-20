@@ -1,0 +1,18 @@
+{
+    "apps": [
+        {
+            "name": "app-name",
+            "script": "node_modules/next/dist/bin/next",
+            "args": "start -p 4100",
+            "cwd": "./",
+            "instances": "max",
+            "exec_mode": "cluster",
+            "autorestart": true,
+            "watch": false,
+            "time": true,
+            "env": {
+                "NEXT_PUBLIC_DEPLOY_MODE": "production"
+            }
+        }
+    ]
+}
