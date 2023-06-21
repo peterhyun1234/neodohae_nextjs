@@ -2,19 +2,30 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import Styled from 'styled-components'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
+import { useCopyToClipboard } from 'react-use';
 
 import LOGO from '@/assets/images/neodohae_logo.png';
 import LOGO_TEXT from '@/assets/images/neodohae_logo_text.png';
 
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 
 const TopAppBarHome = () => {
     const router = useRouter();
 
     const [pageYOffset, setPageYOffset] = useState<any>(0);
     const [innerWidth, setInnerWidth] = useState<any>(1000);
+    const [isCopied, copyToClipboard] = useCopyToClipboard()
 
+    const handleCopyClick = () => {
+        //TODO: 방 초대 링크 복사
+        const roomCode = '123456'
+        copyToClipboard(roomCode);
+        if (isCopied) {
+            alert('자기소개서 첨삭 결과가 복사되었습니다.')
+        }
+    }
     const onClickLogo = () => {
         router.push('/')
         scrollTo(0, 0)
@@ -53,11 +64,13 @@ const TopAppBarHome = () => {
                         <AppBarCenterDiv>
                         </AppBarCenterDiv>
                         <AppBarRightDiv>
-                            <MenuBtnDiv>
+                            <MenuBtnDiv onClick={handleCopyClick}
+                            >
                                 <MenuBtnText>{"방 초대"}</MenuBtnText>
                                 <ShareRoundedIcon fontSize='inherit' color='inherit' />
                             </MenuBtnDiv>
-                            <MenuBtnDiv>
+                            <MenuBtnDiv onClick={() => router.push('/notification')}
+                            >
                                 <NotificationsNoneRoundedIcon fontSize='inherit' color='inherit' />
                             </MenuBtnDiv>
                         </AppBarRightDiv>
@@ -65,15 +78,37 @@ const TopAppBarHome = () => {
                     :
                     <AppBarDetailDiv>
                         <AppBarLeftDiv>
-                            {/* 메뉴바
-                            - 홈, 스케줄, 채팅, 마이페이지 */}
+                            <LogoTextBtn alt="Logo" src={LOGO_TEXT} onClick={() => onClickLogo()} />
+                            <AppBarDivider />
+                            <MenuBtn 
+                                isSelected={router.pathname === '/todo'}
+                                onClick={() => router.push('/todo')}
+                            >To-Do 확인</MenuBtn>
+                            <MenuBtn
+                                isSelected={router.pathname === '/schedule'}
+                                onClick={() => router.push('/schedule')}
+                            >룸메 일정 확인</MenuBtn>
+                            <MenuBtn
+                                isSelected={router.pathname === '/chat'}
+                                onClick={() => router.push('/chat')}
+                            >룸 채팅</MenuBtn>
                         </AppBarLeftDiv>
                         <AppBarCenterDiv>
-                            <LogoTextBtn alt="Logo" src={LOGO_TEXT} onClick={() => onClickLogo()} />
                         </AppBarCenterDiv>
                         <AppBarRightDiv>
-                            {/* 알림
-                            초대 */}
+                            <MenuBtnDiv onClick={handleCopyClick}
+                            >
+                                <MenuBtnText>{"방 초대"}</MenuBtnText>
+                                <ShareRoundedIcon fontSize='inherit' color='inherit' />
+                            </MenuBtnDiv>
+                            <MenuBtnDiv onClick={() => router.push('/notification')}
+                            >
+                                <NotificationsNoneRoundedIcon fontSize='inherit' color='inherit' />
+                            </MenuBtnDiv>
+                            <MenuBtnDiv onClick={() => router.push('/profile')}
+                            >
+                                <PersonRoundedIcon fontSize='inherit' color='inherit' />
+                            </MenuBtnDiv>
                         </AppBarRightDiv>
                     </AppBarDetailDiv>
             }
@@ -148,6 +183,21 @@ const MenuBtnText = Styled.div`
     font-size: 17px;
     font-weight: 500;
     color: inherit;
+`
+const MenuBtn = Styled.div<{ isSelected: boolean }>`
+    ${props => props.isSelected === true && `background: linear-gradient(65deg, rgba(153,196,190,1) 0%, rgba(1,99,49,1) 33%, rgba(25,153,149,1) 70%, rgba(2,129,154,1) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;`}
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    word-spacing: -2px;
+    cursor: pointer;
+    &:hover {
+        font-size: 17px;
+        font-weight: 600;
+        background: linear-gradient(65deg, rgba(153,196,0,1) 0%, rgba(1,99,49,1) 33%, rgba(25,153,149,1) 70%, rgba(2,129,154,1) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 `
 
 export default TopAppBarHome;
