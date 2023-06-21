@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import TopAppBarHome from '@/components/appBar/TopAppBarHome';
-import BottomNavigation from '@/components/navigation/BottomNavigation';
+import BottomNavigation from '@/components/navigation/BottomNav';
 
 const Home = () => {
     const router = useRouter()
@@ -57,7 +57,7 @@ const WrapBox = Styled.div`
   @media (max-width: 650px) {
     padding-top: 60px;
   }
-`;
+`
 const FooterDiv = Styled.div`
     padding-top: 20px;
     background-color: #f8f9fa;

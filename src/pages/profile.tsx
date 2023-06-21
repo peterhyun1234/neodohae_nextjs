@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import TopAppBarHome from '@/components/appBar/TopAppBarHome';
+import BottomNavigation from '@/components/navigation/BottomNav';
 
 const Profile = () => {
     const router = useRouter()
@@ -13,7 +14,12 @@ const Profile = () => {
 
 
     return (
-        <>
+        <div style={
+            {
+                width: '100%',
+                backgroundColor: '#FAFAFF',
+            }
+        }>
             {
                 <TopAppBarHome />
             }
@@ -31,17 +37,24 @@ const Profile = () => {
                 <h1>너도해 Profile 페이지</h1>
                 <h1>너도해 Profile 페이지</h1>
             </WrapBox>
-        </>
+            {
+                <BottomNavigation/>
+            }
+        </div>
     )
 };
 
 const WrapBox = Styled.div`
-    width: 100%;
-    display: inline-block;
-    max-width: 1000px;
-    padding-top: calc(80px + 100px);
-    padding-bottom: 100px;
-    min-height: 100vh;
+  width: 100%;
+  display: inline-block;
+  max-width: 1000px;
+  padding-top: calc(60px + 70px);
+  padding-bottom: 100px;
+  min-height: 100vh;
+
+  @media (max-width: 650px) {
+    padding-top: 60px;
+  }
 `
 
 export default Profile;
