@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4100",
-    "build": "next build",
-    "start": "next start -p 4100",
+    "dev": "env-cmd -f .env.development next dev",
+    "build": "env-cmd -f .env.production next build",
+    "start": "next start",
     "docker:build": "docker build --pull --rm -f \"Dockerfile\" -t neodohaenextjs:latest \".\" ",
     "docker:run": "docker run -d -p 4100:4100 neodohaenextjs",
     "pm2": "pm2 list && pm2-runtime start pm2.json",
