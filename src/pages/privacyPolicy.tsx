@@ -44,8 +44,6 @@ const privacyPolicy = `너도해 개인정보처리방침:
 `;
 
 const PrivacyPolicy = () => {
-    const router = useRouter()
-
     return (
         <>
             {
