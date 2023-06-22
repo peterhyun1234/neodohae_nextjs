@@ -32,10 +32,8 @@ const Home = () => {
                     <FooterInfoDiv>
                         <FooterInfoTitle>{"연락처"}</FooterInfoTitle>
                         <FooterInfoDescription>{"관리자 이메일: peterhyun1234@gmail.com"}</FooterInfoDescription>
-                        {/* <FooterInfoDescription>
-                            {"웹사이트: "}
-                            <a href="https://peterjeon.co.kr" target="_blank" rel="noopener noreferrer">https://peterjeon.co.kr</a>
-                        </FooterInfoDescription> */}
+                        <FooterInfoDescription onClick={() => router.push('/privacyPolicy')}>{"개인정보처리방침"}</FooterInfoDescription>
+                        <FooterInfoDescription onClick={() => router.push('/terms')}>{"이용약관"}</FooterInfoDescription>
                     </FooterInfoDiv>
                 </FooterContentDiv>
             </FooterDiv>
@@ -50,12 +48,12 @@ const WrapBox = Styled.div`
   width: 100%;
   display: inline-block;
   max-width: 1000px;
-  padding-top: calc(60px + 70px);
+  padding-top: calc(80px + 70px);
   padding-bottom: 100px;
   min-height: 100vh;
 
   @media (max-width: 650px) {
-    padding-top: 60px;
+    padding-top: 80px;
   }
 `
 const FooterDiv = Styled.div`

@@ -39,12 +39,12 @@ const WrapBox = Styled.div`
   width: 100%;
   display: inline-block;
   max-width: 1000px;
-  padding-top: calc(60px + 70px);
+  padding-top: calc(80px + 70px);
   padding-bottom: 100px;
   min-height: 100vh;
 
   @media (max-width: 650px) {
-    padding-top: 60px;
+    padding-top: 80px;
   }
 `
 
