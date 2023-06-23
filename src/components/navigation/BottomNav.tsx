@@ -17,8 +17,11 @@ const CustomBottomNavigation = styled(BottomNavigation)({
     color: "#5a5adc",
   },
   "& .MuiBottomNavigationAction-label": {
-    fontSize: "0.95rem",
+    fontSize: "0.8rem",
     marginTop: "4px",
+  },
+  "& .MuiButtonBase-root": {
+    minWidth: "70px",
   },
 });
 
