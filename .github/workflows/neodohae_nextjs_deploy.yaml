@@ -40,6 +40,9 @@ jobs:
         echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env.production
         echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env.production
         echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production
+        echo "API_SERVER_URI=${{ secrets.API_SERVER_URI }}" >> .env.production
+        echo "PORT=${{ secrets.PORT }}" >> .env.production
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
