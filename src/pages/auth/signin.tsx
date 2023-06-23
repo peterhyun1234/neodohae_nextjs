@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
@@ -16,10 +15,9 @@ const SignIn = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log('session', session);
-    // if (session) {
-    //   router.back();
-    // }
+    if (session) {
+      router.push('/');
+    }
   }, [session]);
 
   return (

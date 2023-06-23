@@ -18,10 +18,6 @@ const InnerApp = ({ Component, pageProps }: AppProps) => {
   const isUser = !!session?.user;
 
   useEffect(() => {
-    console.log('session', session);
-    console.log('status', status);
-    console.log('isUser', isUser);
-
     const publicRoutes = ['/privacyPolicy', '/terms', '/auth/signin'];
 
     const isPublicRoute = publicRoutes.includes(router.pathname);
