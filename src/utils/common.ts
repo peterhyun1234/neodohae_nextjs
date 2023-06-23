@@ -77,24 +77,3 @@ export const setPhaseStatus = (content: any) => {
 export const removePhaseStatus = () => {
     sessionStorage.removeItem('PhaseStatus');
 }
-
-/**
- * loggingUserInfo()
- * : client 정보 로깅
- * @returns X
- */
-export const loggingUserInfo = async (recvLocation: any) => {
-    //TODO: 추후에 라우팅되는 정보도 전부로깅하도록 수정 필요
-    if (recvLocation != undefined)
-        console.log(recvLocation)
-    if (navigator != undefined)
-        console.log(navigator.userAgent)
-    const IPInfo = await getIPInfo()
-    if (IPInfo != undefined)
-        console.log(IPInfo)
-}
-
-const getIPInfo = async (): Promise<any> => {
-    const res = await Axios.get('https://geolocation-db.com/json/')
-    return res.data
-}
