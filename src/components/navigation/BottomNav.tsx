@@ -29,7 +29,7 @@ const BottomNav = () => {
     const router = useRouter();
     const [value, setValue] = useState(0);
 
-    const paths = ['/', '/todo', '/schedule', '/chat', '/profile'];
+    const paths = ['/', '/todo', '/schedule', '/chat', '/myPage'];
 
     useEffect(() => {
         setValue(paths.indexOf(router.pathname));

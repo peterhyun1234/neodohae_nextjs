@@ -1,18 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Styled from 'styled-components';
 import Image from 'next/image';
 
-import LOGO from '@/assets/images/neodohae_logo.png';
-import GOOGLE_SIGNIN from '@/assets/images/google_signin.png';
-import KAKAO_SIGNIN from '@/assets/images/kakao_signin.png';
-import NAVER_SIGNIN from '@/assets/images/naver_signin.png';
-import GITHUB_SIGNIN from '@/assets/images/github_signin.png';
+import LoadingPopup from '@/components/popup/LoadingPopup';
+
+import LOGO from '@/assets/images/neodohae_logo_text.png';
+import KAKAO_LOGO from '@/assets/images/kakao_logo.png';
+import NAVER_LOGO from '@/assets/images/naver_logo.png';
+import GOOGLE_LOGO from '@/assets/images/google_logo.png';
+import GITHUB_LOGO from '@/assets/images/github_logo.png';
 
 const SignIn = () => {
   const { data: session } = useSession();
   const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (session) {
@@ -21,123 +25,160 @@ const SignIn = () => {
   }, [session]);
 
   return (
+    <>
+    {
+      isLoading && (
+        <LoadingPopup/>
+      )
+    }
     <WrapBox>
       <SignInBox>
         <IntroBox>
           <LogoBox>
             <LogoBtn src={LOGO} alt="Logo" />
           </LogoBox>
-          <ServiceName>너도해</ServiceName>
           <ServiceDescription>
             편안한 공동 생활을 도와주는 서비스
           </ServiceDescription>
         </IntroBox>
         <SignButtonBox>
-          <SignInTitle>다른 서비스로 로그인</SignInTitle>
+          <SignInTitle>다른 서비스로 로그인:</SignInTitle>
           <ProviderListBox>
-            <ProviderDiv
-            // onClick={() => signIn("kakao")}
+            <ProviderDiv 
+              onClick={() => {
+                setIsLoading(true)
+                signIn('kakao')
+              }}
+              bgColor={'#fee601'}
             >
-              <ProviderImage src={KAKAO_SIGNIN} alt={'KAKAO_SIGNIN'} />
+              <ProviderLogoImage src={KAKAO_LOGO} alt={'KAKAO_LOGO'} />
+              <ProviderText
+                color={'#3c1e1e'}
+              >
+                카카오로 로그인
+              </ProviderText>
             </ProviderDiv>
             <ProviderDiv
-            // onClick={() => signIn("naver")}
+              onClick={() => {
+                setIsLoading(true)
+                signIn('naver')
+              }}
+              bgColor={'#04c75a'}
             >
-              <ProviderImage src={NAVER_SIGNIN} alt={'NAVER_SIGNIN'} />
-            </ProviderDiv>
-            <ProviderDiv onClick={() => signIn('google')}>
-              <ProviderImage src={GOOGLE_SIGNIN} alt={'GOOGLE_SIGNIN'} />
+              <ProviderLogoImage src={NAVER_LOGO} alt={'NAVER_LOGO'} />
+              <ProviderText
+                color={'#ffffff'}
+              >
+                네이버로 로그인
+              </ProviderText>
             </ProviderDiv>
             <ProviderDiv
-            // onClick={() => signIn("github")}
+              onClick={() => {
+                setIsLoading(true)
+                signIn('google')
+              }}
+              bgColor={'#ffffff'}
             >
-              <ProviderImage src={GITHUB_SIGNIN} alt={'GITHUB_SIGNIN'} />
+              <ProviderLogoImage src={GOOGLE_LOGO} alt={'GOOGLE_LOGO'} />
+              <ProviderText
+                color={'#7d8487'}
+              >
+                구글로 로그인
+              </ProviderText>
+            </ProviderDiv>
+            <ProviderDiv
+              onClick={() => {
+                setIsLoading(true)
+                signIn('github')
+              }}
+              bgColor={'#ffffff'}
+            >
+              <ProviderLogoImage src={GITHUB_LOGO} alt={'GITHUB_LOGO'} />
+              <ProviderText
+                color={'#151515'}
+              >
+                깃허브로 로그인
+              </ProviderText>
             </ProviderDiv>
           </ProviderListBox>
         </SignButtonBox>
       </SignInBox>
     </WrapBox>
+    </>
   );
 };
 
 const WrapBox = Styled.div`
-    z-index: 99;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    min-width: 100vw;
-    min-height: 100vh;
+  z-index: 99;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  min-width: 100vw;
+  min-height: 100vh;
+  top: 0;
+  left: 0;
+  background: linear-gradient(
+    to bottom right, 
+    rgba(115, 186, 210, 0.8),
+    rgba(231, 239, 243, 0.8),
+    rgba(228, 121, 228, 0.8)
+  );
+  &::before {
+    content: "";
+    position: absolute;
     top: 0;
     left: 0;
-    background-color: #f8f8fc;
-    &>div{
-        position: absolute;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        left: 50%;
-    }
-`;
-
-const SignInBox = Styled.div`
-  display: flex;
-  flex-direction: row;
-	box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.25);
-  @media (max-width: 768px) {
-    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    background: rgba(9, 30, 66, 0.34);
   }
 `;
-
+const SignInBox = Styled.div`
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  background-color: #ffffff;
+	box-shadow: 5px 5px 10px rgba(19, 16, 16, 0.25);
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  @media (max-width: 650px) {
+    width: 100%;
+  }
+`;
 const IntroBox = Styled.div`
-  width: 50%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-	background-color: #842d7d;
 	padding: 20px;
-  @media (max-width: 768px) {
-    width: 100%;
-  }
+  border-bottom: 1px solid #999999;
 `;
-
 const LogoBox = Styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
 `;
-
 const LogoBtn = Styled(Image)`
-  width: 80px;
-  height: 80px;
+  width: 160px;
+  height: 64px;
 	margin-bottom: 10px;
 `;
-
-const ServiceName = Styled.div`
-  text-align: center;
-	font-size: 1.5rem;
-	font-weight: 700;
-	color: #ffffff;
-	margin-bottom: 10px;
-`;
-
 const ServiceDescription = Styled.div`
   text-align: center;
-	font-size: 0.8rem;
+	font-size: 1rem;
 	font-weight: 400;
-	color: #ffffff;
+	color: #666666;
 `;
-
 const SignButtonBox = Styled.div`
-	background-color: #ffffff;
-  width: 50%;
+  width: 100%;
 	padding: 30px;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
 	align-items: center;
-  @media (max-width: 768px) {
-    width: 100%;
-  }
 `;
 const SignInTitle = Styled.div`
 		font-size: 1rem;
@@ -155,18 +196,29 @@ const ProviderListBox = Styled.div`
     justify-content: center;
     align-items: center;
 `;
-const ProviderDiv = Styled.div`
+const ProviderDiv = Styled.div<{ bgColor?: string }>`
+    background-color: ${({ bgColor }) => bgColor || '#ffffff'};
     width: 100%;
-    padding: 3px 15px;
+    min-width: 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #999999;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 10px 15px;
     height: auto;
     cursor: pointer;
 `;
-const ProviderImage = Styled(Image)`
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4.15 / 1;
-    box-shadow: rgba(0, 0, 0, 0.27) 0px 0px 15px 3px;
-    border-radius: 10px;
+const ProviderLogoImage = Styled(Image)`
+    width: 40px;
+    height: 40px;
+`;
+const ProviderText = Styled.div`
+    font-size: 1rem;
+    font-weight: 700;
+    color: ${({ color }) => color || '#ffffff'};
+    text-align: right;
 `;
 
 export default SignIn;

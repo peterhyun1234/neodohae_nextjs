@@ -105,7 +105,7 @@ const TopAppBarHome = () => {
                             >
                                 <NotificationsNoneRoundedIcon fontSize='inherit' color='inherit' />
                             </MenuBtnDiv>
-                            <MenuBtnDiv onClick={() => router.push('/profile')}
+                            <MenuBtnDiv onClick={() => router.push('/myPage')}
                             >
                                 <PersonRoundedIcon fontSize='inherit' color='inherit' />
                             </MenuBtnDiv>

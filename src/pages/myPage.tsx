@@ -4,10 +4,10 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 
+import TopAppBarHome from '@/components/appBar/TopAppBarHome';
 import BottomNavigation from '@/components/navigation/BottomNav';
-import TopAppBar from '@/components/appBar/TopAppBar';
 
-const Profile = () => {
+const MyPage = () => {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -19,9 +19,30 @@ const Profile = () => {
     setUser(session?.user);
   }, [session]);
 
+  const handleSignOut = () => {
+    signOut();
+  };
+
+  const handleEditProfile = () => {
+    router.push('/profile');
+  };
+
+  const handleManageRoom = () => {
+    router.push('/room/management');
+  };
+
+  const handleDeleteUser = () => {
+    //TODO: deleteUser(user);
+  };
+
   return (
-    <>
-      <TopAppBar title='나의 프로필'/>
+    <div
+      style={{
+        width: '100%',
+        backgroundColor: '#FAFAFF',
+      }}
+    >
+      <TopAppBarHome />
       <WrapBox>
         {user && (
           <MyPageDiv>
@@ -33,10 +54,15 @@ const Profile = () => {
             <UserName>{user?.username}</UserName>
             <Email>{user?.email}</Email>
             <Divider />
+            <Button onClick={handleEditProfile}>개인정보수정</Button>
+            <Button onClick={handleManageRoom}>룸 초대/관리</Button>
+            <Button onClick={handleSignOut}>로그아웃</Button>
+            <Button onClick={handleDeleteUser}>탈퇴하기</Button>
           </MyPageDiv>
         )}
       </WrapBox>
-    </>
+      <BottomNavigation />
+    </div>
   );
 };
 
@@ -107,4 +133,4 @@ const Button = Styled.button`
   }
 `
 
-export default Profile;
+export default MyPage;

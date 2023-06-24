@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+import KakaoProvider from 'next-auth/providers/kakao';
+import NaverProvider from 'next-auth/providers/naver';
+import GitHubProvider from 'next-auth/providers/github';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
@@ -19,16 +22,28 @@ const nextAuthOptions: any = {
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
+    KakaoProvider({
+      clientId: process.env.KAKAO_CLIENT_ID!,
+      clientSecret: process.env.KAKAO_CLIENT_SECRET!,
+    }),
+    NaverProvider({
+      clientId: process.env.NAVER_CLIENT_ID!,
+      clientSecret: process.env.NAVER_CLIENT_SECRET!,
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID!,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+    }),
   ],
   secret: process.env.JWT_SECRET,
   callbacks: {
     async jwt({ token, account }: any) {
       try {
         if (account) {
-					//TODO: Provider에 따라 currentUser 다르게 처리
           const currentUser = {
             username: token.name,
             email: token.email,
+            picture: token.picture ?? null,
           };
           const generatedToken = generateToken(currentUser);
           axios.defaults.headers.common[
