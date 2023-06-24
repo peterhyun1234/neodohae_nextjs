@@ -1,7 +1,7 @@
 {
     "apps": [
         {
-            "name": "app-name",
+            "name": "neodohae_nextjs",
             "script": "node_modules/next/dist/bin/next",
             "args": "start -p 4100",
             "cwd": "./",
