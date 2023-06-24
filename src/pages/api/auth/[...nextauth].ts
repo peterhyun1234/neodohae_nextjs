@@ -31,8 +31,8 @@ const nextAuthOptions: any = {
       clientSecret: process.env.NAVER_CLIENT_SECRET!,
     }),
     GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID!,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET!,
+      clientId: process.env.SSO_GITHUB_CLIENT_ID!,
+      clientSecret: process.env.SSO_GITHUB_CLIENT_SECRET!,
     }),
   ],
   secret: process.env.JWT_SECRET,
