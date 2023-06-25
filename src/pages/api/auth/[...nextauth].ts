@@ -37,35 +37,41 @@ const nextAuthOptions: any = {
   ],
   secret: process.env.NEXTAUTH_SECRET!,
   callbacks: {
-    async jwt({ token, account }: any) {
-      try {
-        if (account) {
-          const currentUser = {
-            username: token.name,
-            provider: account.provider ?? 'unknown',
-            email: token.email,
-          };
-          const generatedToken = generateToken(currentUser);
-          axios.defaults.headers.common[
-            'Authorization'
-          ] = `Bearer ${generatedToken}`;
+    async jwt({ token, trigger, session, account }: any) {
+      if (trigger === 'signIn') {
+        try {
+          if (account) {
+            const currentUser = {
+              username: token.name,
+              provider: account.provider ?? 'unknown',
+              email: token.email,
+            };
+            const generatedToken = generateToken(currentUser);
+            axios.defaults.headers.common[
+              'Authorization'
+            ] = `Bearer ${generatedToken}`;
 
-          let res = await axios.get(
-            `/users/email/${currentUser.email}/provider/${currentUser.provider}`,
-          );
-          if (!res.data) {
-            res = await axios.post(`/users`, currentUser);
+            let res = await axios.get(
+              `/users/email/${currentUser.email}/provider/${currentUser.provider}`,
+            );
+            if (!res.data) {
+              res = await axios.post(`/users`, currentUser);
+            }
+            if (res.data.username) {
+              token.user = res.data;
+            }
+            token.accessToken = generatedToken;
           }
-          if (res.data.username) {
-            token.user = res.data;
-          }
-          token.accessToken = generatedToken;
+        } catch (error) {
+          console.error('Signin error: ', error);
         }
-        return token;
-      } catch (error) {
-        console.error('Signin error: ', error);
-        return token;
+      } else if (trigger === 'update') {
+        token.user = session.user;
+      } else if (trigger === 'signOut') {
+        //TODO: signOut
+        console.log('signOut');
       }
+      return token;
     },
     async session({ session, token, user }: any) {
       session.accessToken = token.accessToken;

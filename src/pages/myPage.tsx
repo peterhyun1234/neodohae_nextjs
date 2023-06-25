@@ -31,6 +31,11 @@ const MyPage = () => {
     router.push('/room/management');
   };
 
+  const handleOtherRoom = () => {
+    //TODO: 기존 방 정리 후 다른 방으로 이동
+    router.push('/room');
+  };
+
   const handleDeleteUser = () => {
     //TODO: deleteUser(user);
   };
@@ -56,6 +61,7 @@ const MyPage = () => {
             <Divider />
             <Button onClick={handleEditProfile}>개인정보수정</Button>
             <Button onClick={handleManageRoom}>룸 초대/관리</Button>
+            <Button onClick={handleOtherRoom}>다른 룸 들어가기</Button>
             <Button onClick={handleSignOut}>로그아웃</Button>
             <Button onClick={handleDeleteUser}>탈퇴하기</Button>
           </MyPageDiv>

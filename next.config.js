@@ -7,6 +7,9 @@ const withPWA = require('next-pwa')({
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  publicRuntimeConfig: {
+    API_SERVER_URI: process.env.API_SERVER_URI,
+  },
   experimental: {
     scrollRestoration: true,
   },
