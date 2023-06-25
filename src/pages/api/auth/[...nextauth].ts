@@ -7,7 +7,7 @@ import GitHubProvider from 'next-auth/providers/github';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
-axios.defaults.baseURL = process.env.API_SERVER_URI;
+axios.defaults.baseURL = process.env.API_SERVER_URI!;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 
 const generateToken = (user: string | object | Buffer) => {
@@ -35,7 +35,7 @@ const nextAuthOptions: any = {
       clientSecret: process.env.SSO_GITHUB_CLIENT_SECRET!,
     }),
   ],
-  secret: process.env.JWT_SECRET,
+  secret: process.env.NEXTAUTH_SECRET!,
   callbacks: {
     async jwt({ token, account }: any) {
       try {

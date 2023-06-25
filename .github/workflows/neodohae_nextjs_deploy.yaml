@@ -46,6 +46,7 @@ jobs:
         echo "SSO_GITHUB_CLIENT_ID=${{ secrets.SSO_GITHUB_CLIENT_ID }}" >> .env.production
         echo "SSO_GITHUB_CLIENT_SECRET=${{ secrets.SSO_GITHUB_CLIENT_SECRET }}" >> .env.production
         echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
+        echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
         echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production
         echo "API_SERVER_URI=${{ secrets.API_SERVER_URI }}" >> .env.production
         echo "PORT=${{ secrets.PORT }}" >> .env.production
