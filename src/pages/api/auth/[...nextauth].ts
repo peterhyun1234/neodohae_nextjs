@@ -44,14 +44,15 @@ const nextAuthOptions: any = {
             username: token.name,
             provider: account.provider ?? 'unknown',
             email: token.email,
-            picture: token.picture ?? null,
           };
           const generatedToken = generateToken(currentUser);
           axios.defaults.headers.common[
             'Authorization'
           ] = `Bearer ${generatedToken}`;
 
-          let res = await axios.get(`/users/email/${currentUser.email}`);
+          let res = await axios.get(
+            `/users/email/${currentUser.email}/privider/${currentUser.provider}`,
+          );
           if (!res.data) {
             res = await axios.post(`/users`, currentUser);
           }
