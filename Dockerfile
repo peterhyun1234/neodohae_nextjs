@@ -16,6 +16,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 
+COPY .env.production /app/.env.production
+
 COPY --from=build-env /app/.next /app/.next
 COPY --from=build-env /app/public /app/public
 COPY --from=build-env /app/pm2.json /app/pm2.json
