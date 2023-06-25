@@ -51,7 +51,7 @@ const nextAuthOptions: any = {
           ] = `Bearer ${generatedToken}`;
 
           let res = await axios.get(
-            `/users/email/${currentUser.email}/privider/${currentUser.provider}`,
+            `/users/email/${currentUser.email}/provider/${currentUser.provider}`,
           );
           if (!res.data) {
             res = await axios.post(`/users`, currentUser);
