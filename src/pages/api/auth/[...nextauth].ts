@@ -42,6 +42,7 @@ const nextAuthOptions: any = {
         if (account) {
           const currentUser = {
             username: token.name,
+            provider: account.provider ?? 'unknown',
             email: token.email,
             picture: token.picture ?? null,
           };
