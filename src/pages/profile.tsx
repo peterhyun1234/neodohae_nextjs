@@ -21,13 +21,19 @@ const Profile = () => {
 
   return (
     <>
-      <TopAppBar title='나의 프로필'/>
+      <TopAppBar title="나의 프로필" />
       <WrapBox>
         {user && (
           <MyPageDiv>
             <ProfileImgDiv>
               {user?.picture && (
-                <ProfileImg src={user.picture} alt="User profile image" width={80} height={80} />
+                <ProfileImg
+                  loader={() => user.picture}
+                  src={user.picture}
+                  alt="User profile image"
+                  width={80}
+                  height={80}
+                />
               )}
             </ProfileImgDiv>
             <UserName>{user?.username}</UserName>
@@ -53,16 +59,16 @@ const WrapBox = Styled.div`
   }
 
   text-align: center;
-`
+`;
 const MyPageDiv = Styled.div`
   width: 100%;
   padding: 20px;
-`
+`;
 const ProfileImgDiv = Styled.div`
   display: flex;
   justify-content: center;
   align-items: baseline;
-`
+`;
 const ProfileImg = Styled(Image)`
   height: 80px;
   width: 80px;
@@ -71,23 +77,23 @@ const ProfileImg = Styled(Image)`
   border-radius: 50%;
   border: solid 1px #9e9e9e;
   display: inline-block;
-`
+`;
 const UserName = Styled.div`
   font-size: 24px;
   font-weight: 500;
   margin-top: 10px;
-`
+`;
 const Email = Styled.div`
   font-size: 16px;
   font-weight: 500;
   margin-top: 10px;
-`
+`;
 const Divider = Styled.div`
   width: 100%;
   height: 1px;
   background-color: #9e9e9e;
   margin: 20px 0;
-`
+`;
 const Button = Styled.button`
   display: block;
   width: 100%;
@@ -105,6 +111,6 @@ const Button = Styled.button`
   &:hover {
     background-color: #682a69;
   }
-`
+`;
 
 export default Profile;

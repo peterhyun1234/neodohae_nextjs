@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "env-cmd -f .env.development next dev",
+    "dev:prod": "env-cmd -f .env.test next dev",
     "build": "env-cmd -f .env.production next build",
     "start": "next start",
     "docker:build": "docker build --pull --rm -f \"Dockerfile\" -t neodohae_nextjs:latest \".\" ",
