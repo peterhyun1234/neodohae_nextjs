@@ -24,86 +24,60 @@ const SignIn = () => {
     }
   }, [session]);
 
+  const handleSignIn = async (provider: string) => {
+    setIsLoading(true);
+    await signIn(provider);
+    setIsLoading(false);
+  };
+
   return (
     <>
-    {
-      isLoading && (
-        <LoadingPopup/>
-      )
-    }
-    <WrapBox>
-      <SignInBox>
-        <IntroBox>
-          <LogoBox>
-            <LogoBtn src={LOGO} alt="Logo" />
-          </LogoBox>
-          <ServiceDescription>
-            편안한 공동 생활을 도와주는 서비스
-          </ServiceDescription>
-        </IntroBox>
-        <SignButtonBox>
-          <SignInTitle>다른 서비스로 로그인:</SignInTitle>
-          <ProviderListBox>
-            <ProviderDiv 
-              onClick={() => {
-                setIsLoading(true)
-                signIn('kakao')
-              }}
-              bgColor={'#fee601'}
-            >
-              <ProviderLogoImage src={KAKAO_LOGO} alt={'KAKAO_LOGO'} />
-              <ProviderText
-                color={'#3c1e1e'}
+      {isLoading && <LoadingPopup />}
+      <WrapBox>
+        <SignInBox>
+          <IntroBox>
+            <LogoBox>
+              <LogoBtn src={LOGO} alt="Logo" />
+            </LogoBox>
+            <ServiceDescription>
+              편안한 공동 생활을 도와주는 서비스
+            </ServiceDescription>
+          </IntroBox>
+          <SignButtonBox>
+            <SignInTitle>다른 서비스로 로그인:</SignInTitle>
+            <ProviderListBox>
+              <ProviderDiv
+                onClick={() => handleSignIn('kakao')}
+                bgColor={'#fee601'}
               >
-                카카오로 로그인
-              </ProviderText>
-            </ProviderDiv>
-            <ProviderDiv
-              onClick={() => {
-                setIsLoading(true)
-                signIn('naver')
-              }}
-              bgColor={'#04c75a'}
-            >
-              <ProviderLogoImage src={NAVER_LOGO} alt={'NAVER_LOGO'} />
-              <ProviderText
-                color={'#ffffff'}
+                <ProviderLogoImage src={KAKAO_LOGO} alt={'KAKAO_LOGO'} />
+                <ProviderText color={'#3c1e1e'}>카카오로 로그인</ProviderText>
+              </ProviderDiv>
+              <ProviderDiv
+                onClick={() => handleSignIn('naver')}
+                bgColor={'#04c75a'}
               >
-                네이버로 로그인
-              </ProviderText>
-            </ProviderDiv>
-            <ProviderDiv
-              onClick={() => {
-                setIsLoading(true)
-                signIn('google')
-              }}
-              bgColor={'#ffffff'}
-            >
-              <ProviderLogoImage src={GOOGLE_LOGO} alt={'GOOGLE_LOGO'} />
-              <ProviderText
-                color={'#7d8487'}
+                <ProviderLogoImage src={NAVER_LOGO} alt={'NAVER_LOGO'} />
+                <ProviderText color={'#ffffff'}>네이버로 로그인</ProviderText>
+              </ProviderDiv>
+              <ProviderDiv
+                onClick={() => handleSignIn('google')}
+                bgColor={'#ffffff'}
               >
-                구글로 로그인
-              </ProviderText>
-            </ProviderDiv>
-            <ProviderDiv
-              onClick={() => {
-                setIsLoading(true)
-                signIn('github')
-              }}
-              bgColor={'#ffffff'}
-            >
-              <ProviderLogoImage src={GITHUB_LOGO} alt={'GITHUB_LOGO'} />
-              <ProviderText
-                color={'#151515'}
+                <ProviderLogoImage src={GOOGLE_LOGO} alt={'GOOGLE_LOGO'} />
+                <ProviderText color={'#7d8487'}>구글로 로그인</ProviderText>
+              </ProviderDiv>
+              <ProviderDiv
+                onClick={() => handleSignIn('github')}
+                bgColor={'#ffffff'}
               >
-                깃허브로 로그인
-              </ProviderText>
-            </ProviderDiv>
-          </ProviderListBox>
-        </SignButtonBox>
-      </SignInBox>
-    </WrapBox>
+                <ProviderLogoImage src={GITHUB_LOGO} alt={'GITHUB_LOGO'} />
+                <ProviderText color={'#151515'}>깃허브로 로그인</ProviderText>
+              </ProviderDiv>
+            </ProviderListBox>
+          </SignButtonBox>
+        </SignInBox>
+      </WrapBox>
     </>
   );
 };
