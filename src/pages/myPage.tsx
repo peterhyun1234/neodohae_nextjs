@@ -32,11 +32,13 @@ const MyPage = () => {
   };
 
   const handleOtherRoom = () => {
+    alert('기능 구현 예정입니다.');
     //TODO: 기존 방 정리 후 다른 방으로 이동
-    router.push('/room');
+    // router.push('/room');
   };
 
   const handleDeleteUser = () => {
+    alert('기능 구현 예정입니다.');
     //TODO: deleteUser(user);
   };
 
