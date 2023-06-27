@@ -19,6 +19,10 @@
   "dependencies": {
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
+    "@fullcalendar/core": "^6.1.8",
+    "@fullcalendar/daygrid": "^6.1.8",
+    "@fullcalendar/react": "^6.1.8",
+    "@fullcalendar/timegrid": "^6.1.8",
     "@mui/icons-material": "^5.11.0",
     "@mui/material": "^5.11.8",
     "@mui/styled-engine-sc": "^5.11.0",
@@ -33,6 +37,7 @@
     "fs": "^0.0.1-security",
     "husky": "^8.0.3",
     "jsonwebtoken": "^9.0.0",
+    "moment": "^2.29.4",
     "next": "13.1.6",
     "next-auth": "^4.22.1",
     "next-compose-plugins": "^2.2.1",
