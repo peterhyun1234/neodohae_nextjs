@@ -130,6 +130,10 @@ const Room = () => {
                   }}
                   value={roomName}
                   onChange={(e) => {
+                    if (e.target.value.length > 7) {
+                      alert('방 이름은 7자 이하로 입력해주세요.');
+                      return;
+                    }
                     setRoomName(e.target.value);
                   }}
                 />
@@ -140,6 +144,7 @@ const Room = () => {
                     roomName !== null
                   }
                   onClick={() => {
+                    if (roomName === '' || roomName === undefined || roomName === null) return;
                     createRoom(roomName);
                   }}
                 >
@@ -157,9 +162,9 @@ const Room = () => {
               <>
                 <TextField
                   id="room-invete-code"
-                  label="방 초대 코드"
+                  label="룸 초대 코드"
                   variant="outlined"
-                  placeholder="방 초대 코드를 입력해주세요."
+                  placeholder="룸 초대 코드를 입력해주세요."
                   sx={{
                     width: '100%',
                     minWidth: '300px',
@@ -177,6 +182,12 @@ const Room = () => {
                     roomInviteCode !== null
                   }
                   onClick={() => {
+                    if (
+                      roomInviteCode === '' ||
+                      roomInviteCode === undefined ||
+                      roomInviteCode === null
+                    )
+                      return;
                     enterToRoom(roomInviteCode);
                   }}
                 >

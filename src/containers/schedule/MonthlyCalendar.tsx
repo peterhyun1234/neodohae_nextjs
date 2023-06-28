@@ -60,6 +60,7 @@ const MonthlyCalendar = ({ events }: Props) => {
             // dateClick={handleDateClick}
             eventClick={handleEventClick}
             eventContent={renderEventContent}
+            eventBorderColor={'#fff'}
             events={events}
           />
         </WrapBox>
@@ -92,13 +93,17 @@ const EventContentDiv = Styled.div<{ bgColor: any }>`
 `;
 const EventContentTitle = Styled.div`
   overflow: hidden;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #fff;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: keep-all;
   @media (max-width: 650px) {
-    font-size: 12px;
+    font-size: 10px;
   }
 `;
 

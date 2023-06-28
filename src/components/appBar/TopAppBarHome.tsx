@@ -19,11 +19,11 @@ const TopAppBarHome = () => {
     const [isCopied, copyToClipboard] = useCopyToClipboard()
 
     const handleCopyClick = () => {
-        //TODO: 방 초대 링크 복사
+        //TODO: 룸 초대 링크 복사
         const roomCode = '123456'
         copyToClipboard(roomCode);
         if (isCopied) {
-            alert('자기소개서 첨삭 결과가 복사되었습니다.')
+            alert('룸 초대 링크가 복사되었습니다.')
         }
     }
     const onClickLogo = () => {
@@ -66,7 +66,7 @@ const TopAppBarHome = () => {
                         <AppBarRightDiv>
                             <MenuBtnDiv onClick={handleCopyClick}
                             >
-                                <MenuBtnText>{"방 초대"}</MenuBtnText>
+                                <MenuBtnText>{"룸 초대"}</MenuBtnText>
                                 <ShareRoundedIcon fontSize='inherit' color='inherit' />
                             </MenuBtnDiv>
                             <MenuBtnDiv onClick={() => router.push('/notification')}
@@ -98,7 +98,7 @@ const TopAppBarHome = () => {
                         <AppBarRightDiv>
                             <MenuBtnDiv onClick={handleCopyClick}
                             >
-                                <MenuBtnText>{"방 초대"}</MenuBtnText>
+                                <MenuBtnText>{"룸 초대"}</MenuBtnText>
                                 <ShareRoundedIcon fontSize='inherit' color='inherit' />
                             </MenuBtnDiv>
                             <MenuBtnDiv onClick={() => router.push('/notification')}

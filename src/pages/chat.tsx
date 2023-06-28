@@ -76,7 +76,7 @@ const Chat = () => {
         return;
     }
     if (!roomId) {
-        alert('방에 입장한 상태에서 메시지를 보낼 수 있습니다.');
+        alert('룸에 입장한 상태에서 메시지를 보낼 수 있습니다.');
         router.push('/room');
         return;
     }
@@ -99,7 +99,7 @@ const Chat = () => {
 
   return (
     <div style={{ width: '100%', backgroundColor: '#FAFAFF' }}>
-      <TopAppBar title='우리 집 채팅방'/>
+      <TopAppBar title={'🏠 ' + '우리 집'}/>
       <WrapBox>
         {messages.map(
           (

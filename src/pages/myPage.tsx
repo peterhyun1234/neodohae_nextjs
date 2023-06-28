@@ -33,7 +33,7 @@ const MyPage = () => {
 
   const handleOtherRoom = () => {
     alert('기능 구현 예정입니다.');
-    //TODO: 기존 방 정리 후 다른 방으로 이동
+    //TODO: 기존 룸 정리 후 다른 룸으로 이동
     // router.push('/room');
   };
 
@@ -53,7 +53,7 @@ const MyPage = () => {
       <WrapBox>
         {user && (
           <MyPageDiv>
-            <ProfileImgDiv>
+            <ProfileImgDiv onClick={handleEditProfile}>
               {user?.picture && (
                 <ProfileImg
                   loader={() => user.picture}
@@ -102,6 +102,7 @@ const ProfileImgDiv = Styled.div`
   display: flex;
   justify-content: center;
   align-items: baseline;
+  cursor: pointer;
 `;
 const ProfileImg = Styled(Image)`
   height: 80px;

@@ -27,84 +27,84 @@ const Home = () => {
         groupId: '전현빈',
         start: '2023-06-22T10:30:00',
         end: '2023-06-26T11:30:00',
-        backgroundColor: '#00b179',
+        backgroundColor: '#36ab86',
       },
       {
         title: '전현빈 약속 2',
         groupId: '전현빈',
         start: '2023-06-26T14:00:00',
         end: '2023-06-26T15:00:00',
-        backgroundColor: '#00b179',
+        backgroundColor: '#36ab86',
       },
       {
         title: '목주영 약속 5',
         groupId: '목주영',
         start: '2023-06-22T10:30:00',
         end: '2023-06-27T11:30:00',
-        backgroundColor: '#327bff',
+        backgroundColor: '#80acff',
       },
       {
         title: '목주영 약속 4',
         groupId: '목주영',
         start: '2023-06-22T10:30:00',
         end: '2023-06-27T11:30:00',
-        backgroundColor: '#327bff',
+        backgroundColor: '#80acff',
       },
       {
         title: '목주영 약속 6',
         groupId: '목주영',
         start: '2023-06-22T10:30:00',
         end: '2023-06-27T11:30:00',
-        backgroundColor: '#327bff',
+        backgroundColor: '#80acff',
       },
       {
         title: '목주영 약속 3',
         groupId: '목주영',
         start: '2023-06-22T10:30:00',
         end: '2023-06-27T11:30:00',
-        backgroundColor: '#327bff',
+        backgroundColor: '#80acff',
       },
       {
         title: '목주영 약속 1',
         groupId: '목주영',
         start: '2023-06-27T10:30:00',
         end: '2023-06-27T11:30:00',
-        backgroundColor: '#327bff',
+        backgroundColor: '#80acff',
       },
       {
         title: '목주영 약속 2',
         groupId: '목주영',
         start: '2023-06-28T14:00:00',
         end: '2023-06-28T15:00:00',
-        backgroundColor: '#327bff',
+        backgroundColor: '#80acff',
       },
       {
         title: '홍솔 약속 1',
         groupId: '홍솔',
         start: '2023-06-18T14:00:00',
         end: '2023-06-29T15:00:00',
-        backgroundColor: '#da990e',
+        backgroundColor: '#e895dc',
       },
       {
         title: '홍솔 약속 2',
         groupId: '홍솔',
         start: '2023-06-22T14:00:00',
         end: '2023-06-24T15:00:00',
-        backgroundColor: '#da990e',
+        backgroundColor: '#e895dc',
       },
       {
         title: '홍솔 약속 2',
         groupId: '홍솔',
         start: '2023-06-27T14:00:00',
         end: '2023-06-28T15:00:00',
-        backgroundColor: '#da990e',
+        backgroundColor: '#e895dc',
       },
       {
         title: '홍솔 약속 2',
         groupId: '홍솔',
         start: '2023-06-28T14:00:00',
         end: '2023-06-28T15:00:00',
-        backgroundColor: '#da990e',
+        backgroundColor: '#e895dc',
       },
     ]);
   };
@@ -334,13 +334,13 @@ const TempBoxdiv = Styled.div`
     margin: 30px 20px 40px 20px;
     border-radius: 15px;
     box-shadow: rgba(0, 0, 0, 0.17) 0px 0px 5px 3px;
-    border: 1px dashed #327bff;
+    border: 1px dashed #80acff;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 30px;
     font-weight: bold;
-    color: #327bff;
+    color: #80acff;
 `;
 
 export default Home;
