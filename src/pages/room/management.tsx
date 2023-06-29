@@ -115,10 +115,16 @@ const RoomManagement = () => {
                               <Roommate key={roommate.id}>
                                 <ProfileImg
                                   loader={() => roommate.picture}
+                                  borderColor={
+                                    roommate.color !== null &&
+                                    roommate.color !== undefined
+                                      ? roommate.color
+                                      : '#fff'
+                                  }
                                   src={roommate.picture}
                                   alt="roommate's picture"
-                                  width={30}
-                                  height={30}
+                                  width={40}
+                                  height={40}
                                 />
                                 <RoommateName>{roommate.username}</RoommateName>
                                 {roommate.id === user.id && <Self>본인</Self>}
@@ -209,12 +215,13 @@ const Roommate = Styled.div`
   padding-bottom: 1rem;
 `;
 const RoommateName = Styled.div`
-  font-size: 1rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: #333333;
+  line-height: 0px;
 `;
 const Self = Styled.div`
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: #7876fb;
   padding: 0.1rem 0.3rem;
@@ -227,13 +234,13 @@ const RoommateDivier = Styled.div`
   height: 1px;
   width: 100%;
 `;
-const ProfileImg = Styled(Image)`
-  height: 30px;
-  width: 30px;
+const ProfileImg = Styled(Image)<{ borderColor: string }>`
+  height: 40px;
+  width: 40px;
   object-fit: cover;
   background-color: #fff;
   border-radius: 50%;
-  border: solid 1px #9e9e9e;
+  border: solid 3px ${(props) => props.borderColor};
   display: inline-block;
 `;
 const RoommateDiv = Styled.div`
