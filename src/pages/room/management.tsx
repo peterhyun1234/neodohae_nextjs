@@ -115,7 +115,7 @@ const RoomManagement = () => {
                               <Roommate key={roommate.id}>
                                 <ProfileImg
                                   loader={() => roommate.picture}
-                                  borderColor={
+                                  bordercolor={
                                     roommate.color !== null &&
                                     roommate.color !== undefined
                                       ? roommate.color
@@ -234,13 +234,13 @@ const RoommateDivier = Styled.div`
   height: 1px;
   width: 100%;
 `;
-const ProfileImg = Styled(Image)<{ borderColor: string }>`
+const ProfileImg = Styled(Image)<{ bordercolor: string }>`
   height: 40px;
   width: 40px;
   object-fit: cover;
   background-color: #fff;
   border-radius: 50%;
-  border: solid 3px ${(props) => props.borderColor};
+  border: solid 3px ${(props) => props.bordercolor};
   display: inline-block;
 `;
 const RoommateDiv = Styled.div`

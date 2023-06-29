@@ -14,19 +14,6 @@ import MonthlyCalendar from '@/containers/schedule/MonthlyCalendar';
 import PunchClockRoundedIcon from '@mui/icons-material/PunchClockRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
-//TODO: 룸 내에 user별로 색깔 다르게 하기
-// user 생성 시 룸 내 지정된 colors 아닌 color 랜덤 지정하면 될듯
-const tempColors = [
-  '#327bff',
-  '#ff327b',
-  '#da990e',
-  '#00b179',
-  '#bf32ff',
-  '#0081bd',
-  '#ff20b9',
-  '#6d9c09',
-];
-
 const Schedule = () => {
   const { data: session } = useSession();
   const router = useRouter();
