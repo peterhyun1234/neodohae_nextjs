@@ -11,12 +11,12 @@ import LOGO from '@/assets/images/neodohae_logo_text.png';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
 
-const Room = () => {
+const RoomJoin = () => {
   const { data: session, update } = useSession();
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isWantToCreateRoom, setIsWantToCreateRoom] = useState<boolean>(true);
+  const [isWantToCreateRoom, setIsWantToCreateRoom] = useState<boolean>(false);
 
   const [roomName, setRoomName] = useState<string>('');
   const [roomInviteCode, setRoomInviteCode] = useState<string>('');
@@ -329,4 +329,4 @@ const RoomSuggestion = Styled.div`
   }
 `;
 
-export default Room;
+export default RoomJoin;

@@ -13,11 +13,6 @@ const MyPage = () => {
 
   const [user, setUser] = useState<any>(session?.user || null);
 
-  useEffect(() => {
-    if (!session) return;
-    if (!session.user) return;
-    setUser(session?.user);
-  }, [session]);
 
   const handleSignOut = () => {
     signOut();
@@ -31,16 +26,21 @@ const MyPage = () => {
     router.push('/room/management');
   };
 
-  const handleOtherRoom = () => {
-    alert('기능 구현 예정입니다.');
-    //TODO: 기존 룸 정리 후 다른 룸으로 이동
-    // router.push('/room');
-  };
-
   const handleDeleteUser = () => {
     alert('기능 구현 예정입니다.');
     //TODO: deleteUser(user);
   };
+  useEffect(() => {
+    if (!user) return;
+    console.log('user: ');
+    console.log(user);
+  }, [user]);
+
+  useEffect(() => {
+    if (!session) return;
+    if (!session.user) return;
+    setUser(session?.user);
+  }, [session]);
 
   return (
     <div
@@ -69,7 +69,6 @@ const MyPage = () => {
             <Divider />
             <Button onClick={handleEditProfile}>개인정보수정</Button>
             <Button onClick={handleManageRoom}>룸 초대/관리</Button>
-            <Button onClick={handleOtherRoom}>다른 룸 들어가기</Button>
             <Button onClick={handleSignOut}>로그아웃</Button>
             <Button onClick={handleDeleteUser}>탈퇴하기</Button>
           </MyPageDiv>
