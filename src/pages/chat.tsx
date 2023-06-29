@@ -32,6 +32,23 @@ const Chat = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const getDayOfWeek = (date: Date) => {
+    const day = date.getDay();
+    const daysInKorean = ['일', '월', '화', '수', '목', '금', '토'];
+    return daysInKorean[day] + '요일';
+  };
+
+  const formatMessageDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const dayOfWeek = getDayOfWeek(date);
+
+    return `${year}년 ${month.toString().padStart(2, '0')}월 ${day
+      .toString()
+      .padStart(2, '0')}일 ${dayOfWeek}`;
+  };
+
   const formatTime = (date: Date) => {
     const hours = date.getHours();
     const minutes = date.getMinutes();
@@ -43,6 +60,17 @@ const Chat = () => {
   const sendMessage = (event: FormEvent) => {
     event.preventDefault();
     if (!user) return;
+
+    const trimmedMessage = message.trim();
+    if (!trimmedMessage) {
+      alert('메시지를 입력해주세요.');
+      return;
+    }
+
+    if (trimmedMessage.length > 255) {
+      alert('메시지는 255자 이내로 입력해주세요.');
+      return;
+    }
 
     const senderId = user.id;
     const roomId = user.roomId;
@@ -59,7 +87,7 @@ const Chat = () => {
     const sedingMessage = {
       senderId,
       roomId,
-      content: message,
+      content: trimmedMessage,
     };
     socket.emit('message', sedingMessage);
     setMessage('');
@@ -144,77 +172,97 @@ const Chat = () => {
   return (
     <div style={{ width: '100%', backgroundColor: '#FAFAFF' }}>
       {isLoading && <LoadingPopup />}
-      {user && user.id && user.roomName && (
-        <>
-          <TopAppBarChat
-            title={'🏠 ' + user.roomName}
-            user={user}
-            roommates={roommates}
-          />
-          <WrapBox>
-            {messages.map((msg: any, idx: number) => {
-              const roommate = roommates.find(
-                (rm: any) => rm.id === msg.senderId,
-              );
-              const time = formatTime(new Date(msg.timestamp));
-              const isMine = user.id === msg.senderId;
-              const isProfileNeeded =
-                !idx || messages[idx - 1].senderId !== msg.senderId;
-              return (
-                <MessageDiv key={idx} isMine={isMine}>
-                  <Message isMine={isMine}>
-                    {!isMine && (
-                      <>
-                        {isProfileNeeded ? (
-                          <ProfileImg
-                            loader={() => roommate.picture}
-                            bordercolor={
-                              roommate.color !== null &&
-                              roommate.color !== undefined
-                                ? roommate.color
-                                : '#fff'
-                            }
-                            src={roommate.picture}
-                            alt="roommate's picture"
-                            width={40}
-                            height={40}
-                          />
-                        ) : (
-                          <WhiteBox />
-                        )}
-                      </>
-                    )}
-                    <MessageContentDiv isMine={isMine}>
-                      {!isMine && isProfileNeeded ? (
-                        <RoommateName>{roommate?.username}</RoommateName>
-                      ) : null}
-                      <MessageContent isMine={isMine}>
-                        {msg.content}
-                      </MessageContent>
-                    </MessageContentDiv>
-                  </Message>
-                  <MessageTime>{time}</MessageTime>
-                </MessageDiv>
-              );
-            })}
-            <div ref={messageEndRef} />
-            <BottomNavBarChat>
-              <ChatInput onSubmit={sendMessage}>
-                <MessageInput
-                  type="text"
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  placeholder="메시지 보내기"
-                />
+      {user &&
+        user.id &&
+        user.roomName &&
+        roommates &&
+        roommates.length > 0 && (
+          <>
+            <TopAppBarChat
+              title={'🏠 ' + user.roomName}
+              user={user}
+              roommates={roommates}
+            />
+            <WrapBox>
+              {messages.map((msg: any, idx: number) => {
+                const roommate = roommates.find(
+                  (rm: any) => rm.id === msg.senderId,
+                );
+                const time = formatTime(new Date(msg.timestamp));
+                const isMine = user.id === msg.senderId;
+                const isProfileNeeded =
+                  !idx || messages[idx - 1].senderId !== msg.senderId;
 
-                <SendButton type="submit">
-                  <SendIcon color="inherit" fontSize="inherit" />
-                </SendButton>
-              </ChatInput>
-            </BottomNavBarChat>
-          </WrapBox>
-        </>
-      )}
+                const currentDate = formatMessageDate(new Date(msg.timestamp));
+                const previousDate =
+                  idx > 0
+                    ? formatMessageDate(new Date(messages[idx - 1].timestamp))
+                    : null;
+                const isDateChanged = currentDate !== previousDate;
+
+                return (
+                  <div key={idx}>
+                    {isDateChanged && <DateDivider>{currentDate}</DateDivider>}
+                    <MessageDiv isMine={isMine}>
+                      <Message isMine={isMine}>
+                        {!isMine && (
+                          <>
+                            {isProfileNeeded ? (
+                              <ProfileImg
+                                loader={() => roommate.picture}
+                                bordercolor={
+                                  roommate.color !== null &&
+                                  roommate.color !== undefined
+                                    ? roommate.color
+                                    : '#fff'
+                                }
+                                src={roommate.picture}
+                                alt="roommate's picture"
+                                width={40}
+                                height={40}
+                              />
+                            ) : (
+                              <WhiteBox />
+                            )}
+                          </>
+                        )}
+                        <MessageContentDiv isMine={isMine}>
+                          {!isMine && isProfileNeeded ? (
+                            <RoommateName>{roommate?.username}</RoommateName>
+                          ) : null}
+                          <MessageContent isMine={isMine}>
+                            {msg.content}
+                          </MessageContent>
+                        </MessageContentDiv>
+                      </Message>
+                      <MessageTime>{time}</MessageTime>
+                    </MessageDiv>
+                  </div>
+                );
+              })}
+              <div ref={messageEndRef} />
+              <BottomNavBarChat>
+                <ChatInput onSubmit={sendMessage}>
+                  <MessageInput
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="메시지 보내기"
+                  />
+
+                  <SendButton
+                    type="submit"
+                    isReady={
+                      message.length > 0 && message.length < 255 ? true : false
+                    }
+                  >
+                    <SendIcon color="inherit" fontSize="inherit" />
+                  </SendButton>
+                </ChatInput>
+              </BottomNavBarChat>
+            </WrapBox>
+          </>
+        )}
     </div>
   );
 };
@@ -242,6 +290,7 @@ const BottomNavBarChat = Styled.div`
   border-top: 1px solid #ddd;
 `;
 const ChatInput = Styled.form`
+  width: 100%;
   max-width: 1000px;
   margin: 0 auto;
   display: flex;
@@ -249,9 +298,8 @@ const ChatInput = Styled.form`
   justify-content: space-between;
 `;
 const MessageInput = Styled.input`
-  flex-grow: 1;
-  margin-right: 10px;
-  padding: 10px;
+  width: calc(100% - 80px);
+  padding: 10px 20px;
   border-radius: 4px;
   background-color: #f5f5f5;
   border-radius: 15px;
@@ -263,11 +311,13 @@ const MessageInput = Styled.input`
     font-size: 15px;
   }
 `;
-const SendButton = Styled.button`
+const SendButton = Styled.button<{ isReady: boolean }>`
+  width: 50px;
   display: flex;
   align-items: center;
+  justify-content: center;
   background-color: #fff;
-  color: #7876fb;
+  color: ${(props) => (props.isReady ? '#7876fb' : '#999999')};
   font-size: 25px;
   border: none;
 `;
@@ -297,6 +347,7 @@ const MessageContent = Styled.p<{ isMine: boolean }>`
   border-radius: 10px;
   font-size: 0.9em;
   font-weight: 500;
+  word-break: break-all;
   background-color: ${(props) => (props.isMine ? '#7876fb' : '#f8f8f8')};
   color: ${(props) => (props.isMine ? '#fff' : '#222')};
 `;
@@ -315,8 +366,10 @@ const WhiteBox = Styled.div`
   background-color: #fff;
 `;
 const RoommateName = Styled.div`
+  width: 100%;
+  text-align: left;
   font-size: 0.8em;
-  margin: 0 10px;
+  padding-left: 10px;
   font-weight: bold;
 `;
 const MessageTime = Styled.div`
@@ -324,6 +377,19 @@ const MessageTime = Styled.div`
   font-size: 0.6em;
   color: #888;
   margin: 0 10px;
+`;
+const DateDivider = Styled.div`
+  width: fit-content;
+  margin: 0 auto;
+  background-color: rgba(0,0,0,0.3);
+  text-align: center;
+  color: #fff;
+  font-size: 0.8em;
+  font-weight: bold;
+  border-radius: 5px;
+  padding: 5px 13px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 `;
 
 export default Chat;
