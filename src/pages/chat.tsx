@@ -131,7 +131,9 @@ const Chat = () => {
   }, [session]);
 
   useEffect(() => {
-    const newSocket = io(API_SERVER_URI + '/chat');
+    const newSocket = io(API_SERVER_URI + '/chat', {
+      transports: ['websocket'],
+    });
     setSocket(newSocket);
 
     return () => {
@@ -144,7 +146,11 @@ const Chat = () => {
       {isLoading && <LoadingPopup />}
       {user && user.id && user.roomName && (
         <>
-          <TopAppBarChat title={'🏠 ' + user.roomName} user={user} roommates={roommates}/>
+          <TopAppBarChat
+            title={'🏠 ' + user.roomName}
+            user={user}
+            roommates={roommates}
+          />
           <WrapBox>
             {messages.map((msg: any, idx: number) => {
               const roommate = roommates.find(
@@ -157,14 +163,14 @@ const Chat = () => {
               return (
                 <MessageDiv key={idx} isMine={isMine}>
                   <Message isMine={isMine}>
-                    {
-                      !isMine && 
+                    {!isMine && (
                       <>
                         {isProfileNeeded ? (
                           <ProfileImg
                             loader={() => roommate.picture}
                             bordercolor={
-                              roommate.color !== null && roommate.color !== undefined
+                              roommate.color !== null &&
+                              roommate.color !== undefined
                                 ? roommate.color
                                 : '#fff'
                             }
@@ -177,7 +183,7 @@ const Chat = () => {
                           <WhiteBox />
                         )}
                       </>
-                    }
+                    )}
                     <MessageContentDiv isMine={isMine}>
                       {!isMine && isProfileNeeded ? (
                         <RoommateName>{roommate?.username}</RoommateName>
@@ -202,7 +208,7 @@ const Chat = () => {
                 />
 
                 <SendButton type="submit">
-                  <SendIcon color='inherit' fontSize='inherit'/>
+                  <SendIcon color="inherit" fontSize="inherit" />
                 </SendButton>
               </ChatInput>
             </BottomNavBarChat>
