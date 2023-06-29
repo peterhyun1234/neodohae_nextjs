@@ -41,24 +41,37 @@ const nextAuthOptions: any = {
       if (trigger === 'signIn') {
         try {
           if (account) {
-            const currentUser = {
+            const userForToken = {
               username: token.name,
               provider: account.provider ?? 'unknown',
               email: token.email,
             };
-            const generatedToken = generateToken(currentUser);
+            const generatedToken = generateToken(userForToken);
             axios.defaults.headers.common[
               'Authorization'
             ] = `Bearer ${generatedToken}`;
 
             let res = await axios.get(
-              `/users/email/${currentUser.email}/provider/${currentUser.provider}`,
+              `/users/email/${userForToken.email}/provider/${userForToken.provider}`,
             );
-            if (!res.data) {
-              res = await axios.post(`/users`, currentUser);
+
+            let currentUser = res.data
+            if (!currentUser) {
+              currentUser = res.data;
+            } else {
+              if (currentUser.roomId) {
+                res = await axios.get(`/rooms/id/${currentUser.roomId}`);
+                const currentRoom = res.data;
+                console.log('currentRoom: ', currentRoom);
+                currentUser = {
+                  ...currentUser,
+                  roomName: currentRoom.roomName,
+                  roomInviteCode: currentRoom.inviteCode,
+                };
+              }
             }
-            if (res.data.username) {
-              token.user = res.data;
+            if (currentUser) {
+              token.user = currentUser;
             }
             token.accessToken = generatedToken;
           }

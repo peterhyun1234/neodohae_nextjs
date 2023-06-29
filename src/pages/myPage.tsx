@@ -30,11 +30,6 @@ const MyPage = () => {
     alert('기능 구현 예정입니다.');
     //TODO: deleteUser(user);
   };
-  useEffect(() => {
-    if (!user) return;
-    console.log('user: ');
-    console.log(user);
-  }, [user]);
 
   useEffect(() => {
     if (!session) return;
