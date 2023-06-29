@@ -165,7 +165,7 @@ const Schedule = () => {
       {isLoading && <LoadingPopup />}
       {user && user.id && user.roomName && (
         <>
-          <TopAppBarHome />
+          <TopAppBarHome roomInviteCode={user.roomInviteCode} />
           <WrapBox>
             <CalendarDiv>
               {weeklyEvents && (

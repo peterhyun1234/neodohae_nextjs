@@ -66,31 +66,35 @@ const MyPage = () => {
         backgroundColor: '#FAFAFF',
       }}
     >
-      <TopAppBarHome />
-      <WrapBox>
-        {user && (
-          <MyPageDiv>
-            <ProfileImgDiv onClick={handleEditProfile}>
-              {user?.picture && (
-                <ProfileImg
-                  loader={() => user.picture}
-                  src={user.picture}
-                  alt="User profile image"
-                  width={80}
-                  height={80}
-                />
-              )}
-            </ProfileImgDiv>
-            <UserName>{user?.username}</UserName>
-            <Email>{user?.email}</Email>
-            <Divider />
-            <Button onClick={handleEditProfile}>개인정보수정</Button>
-            <Button onClick={handleManageRoom}>룸 초대/관리</Button>
-            <Button onClick={handleSignOut}>로그아웃</Button>
-            <Button onClick={handleDeleteUser}>탈퇴하기</Button>
-          </MyPageDiv>
-        )}
-      </WrapBox>
+      {user && user.id && user.roomName && (
+        <>
+          <TopAppBarHome roomInviteCode={user.roomInviteCode} />
+          <WrapBox>
+            {user && (
+              <MyPageDiv>
+                <ProfileImgDiv onClick={handleEditProfile}>
+                  {user?.picture && (
+                    <ProfileImg
+                      loader={() => user.picture}
+                      src={user.picture}
+                      alt="User profile image"
+                      width={80}
+                      height={80}
+                    />
+                  )}
+                </ProfileImgDiv>
+                <UserName>{user?.username}</UserName>
+                <Email>{user?.email}</Email>
+                <Divider />
+                <Button onClick={handleEditProfile}>개인정보수정</Button>
+                <Button onClick={handleManageRoom}>룸 초대/관리</Button>
+                <Button onClick={handleSignOut}>로그아웃</Button>
+                <Button onClick={handleDeleteUser}>탈퇴하기</Button>
+              </MyPageDiv>
+            )}
+          </WrapBox>
+        </>
+      )}
       <BottomNavigation />
     </div>
   );

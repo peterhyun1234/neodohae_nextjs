@@ -32,11 +32,21 @@ const Todo = () => {
       }}
     >
       {isLoading && <LoadingPopup />}
-      <TopAppBarHome />
-      <WrapBox>
-        <h1>너도해 Todo 추가 페이지</h1>
-      </WrapBox>
-      {<BottomNavigation />}
+      {user && user.id && user.roomName && (
+        <>
+          <TopAppBarHome roomInviteCode={user.roomInviteCode} />
+          <WrapBox>
+            <h1>너도해 Todo 페이지</h1>
+            <h1>너도해 Todo 페이지</h1>
+            <h1>너도해 Todo 페이지</h1>
+            <h1>너도해 Todo 페이지</h1>
+            <h1>너도해 Todo 페이지</h1>
+            <h1>너도해 Todo 페이지</h1>
+            <h1>너도해 Todo 페이지</h1>
+          </WrapBox>
+        </>
+      )}
+      <BottomNavigation />
     </div>
   );
 };

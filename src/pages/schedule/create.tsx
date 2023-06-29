@@ -3,7 +3,7 @@ import Styled from 'styled-components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 
-import TopAppBarHome from '@/components/appBar/TopAppBarHome';
+import TopAppBar from '@/components/appBar/TopAppBar';
 import BottomNavigation from '@/components/navigation/BottomNav';
 
 const ScheduleCreate = () => {
@@ -21,7 +21,7 @@ const ScheduleCreate = () => {
             }
         }>
             {
-                <TopAppBarHome />
+                <TopAppBar title='스케줄 생성' />
             }
             <WrapBox>
                 <h1>너도해 ScheduleCreate 페이지</h1>

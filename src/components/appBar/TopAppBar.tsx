@@ -18,7 +18,9 @@ const TopAppBar = ({title}: {title?: string}) => {
           </ArrowBackDiv>
         </AppBarLeftDiv>
         <AppBarCenterDiv>
-          <TitleText>{title}</TitleText>
+          {
+            title && <TitleText>{title}</TitleText>
+          }
         </AppBarCenterDiv>
         <AppBarRightDiv>
           <WhiteBox />

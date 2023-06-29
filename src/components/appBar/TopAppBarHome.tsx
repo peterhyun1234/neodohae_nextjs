@@ -11,7 +11,11 @@ import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneR
 import ShareRoundedIcon from '@mui/icons-material/ShareRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 
-const TopAppBarHome = () => {
+interface Props {
+    roomInviteCode?: string
+}
+
+const TopAppBarHome = ({roomInviteCode}: Props) => {
     const router = useRouter();
 
     const [pageYOffset, setPageYOffset] = useState<any>(0);
@@ -19,11 +23,10 @@ const TopAppBarHome = () => {
     const [isCopied, copyToClipboard] = useCopyToClipboard()
 
     const handleCopyClick = () => {
-        //TODO: 룸 초대 링크 복사
-        const roomCode = '123456'
-        copyToClipboard(roomCode);
+        if (!roomInviteCode) return
+        copyToClipboard(roomInviteCode);
         if (isCopied) {
-            alert('룸 초대 링크가 복사되었습니다.')
+            alert('룸 초대 링크가 복사되었습니다. "' + roomInviteCode + '"')
         }
     }
     const onClickLogo = () => {
@@ -42,7 +45,6 @@ const TopAppBarHome = () => {
     }
 
     useEffect(() => {
-        //TODO: 스크롤 이벤트, 리사이즈 이벤트 media query로 대체
         setInnerWidth(window.innerWidth)
         setPageYOffset(window.pageYOffset)
         window.addEventListener('scroll', handleScroll)
@@ -64,11 +66,14 @@ const TopAppBarHome = () => {
                         <AppBarCenterDiv>
                         </AppBarCenterDiv>
                         <AppBarRightDiv>
-                            <MenuBtnDiv onClick={handleCopyClick}
-                            >
-                                <MenuBtnText>{"룸 초대"}</MenuBtnText>
-                                <ShareRoundedIcon fontSize='inherit' color='inherit' />
-                            </MenuBtnDiv>
+                            {
+                                roomInviteCode &&
+                                <MenuBtnDiv onClick={handleCopyClick}
+                                >
+                                    <MenuBtnText>{"룸 초대"}</MenuBtnText>
+                                    <ShareRoundedIcon fontSize='inherit' color='inherit' />
+                                </MenuBtnDiv>
+                            }
                             <MenuBtnDiv onClick={() => router.push('/notification')}
                             >
                                 <NotificationsNoneRoundedIcon fontSize='inherit' color='inherit' />
@@ -96,11 +101,14 @@ const TopAppBarHome = () => {
                         <AppBarCenterDiv>
                         </AppBarCenterDiv>
                         <AppBarRightDiv>
-                            <MenuBtnDiv onClick={handleCopyClick}
-                            >
-                                <MenuBtnText>{"룸 초대"}</MenuBtnText>
-                                <ShareRoundedIcon fontSize='inherit' color='inherit' />
-                            </MenuBtnDiv>
+                            {
+                                roomInviteCode &&
+                                <MenuBtnDiv onClick={handleCopyClick}
+                                >
+                                    <MenuBtnText>{"룸 초대"}</MenuBtnText>
+                                    <ShareRoundedIcon fontSize='inherit' color='inherit' />
+                                </MenuBtnDiv>
+                            }
                             <MenuBtnDiv onClick={() => router.push('/notification')}
                             >
                                 <NotificationsNoneRoundedIcon fontSize='inherit' color='inherit' />
