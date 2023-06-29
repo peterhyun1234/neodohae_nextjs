@@ -137,7 +137,7 @@ const Room = () => {
               <>
                 <TextField
                   id="room-create"
-                  label="방 이름"
+                  label="생성할 방 이름"
                   variant="outlined"
                   placeholder="방 이름을 입력해주세요."
                   sx={{
@@ -147,8 +147,8 @@ const Room = () => {
                   }}
                   value={roomName}
                   onChange={(e) => {
-                    if (e.target.value.length > 7) {
-                      alert('방 이름은 7자 이하로 입력해주세요.');
+                    if (e.target.value.length > 8) {
+                      alert('방 이름은 8자 이하로 입력해주세요.');
                       return;
                     }
                     setRoomName(e.target.value);
@@ -194,6 +194,10 @@ const Room = () => {
                   }}
                   value={roomInviteCode}
                   onChange={(e) => {
+                    if (e.target.value.length > 8) {
+                      alert('초대 코드는 8자 이하로 입력해주세요.');
+                      return;
+                    }
                     setRoomInviteCode(e.target.value);
                   }}
                 />
@@ -314,19 +318,17 @@ const RoomBtn = Styled.button<{ isActivated: boolean }>`
 const RoomSuggestion = Styled.div`
   width: 100%;
   height: 50px;
+  margin-top: 20px;
   border-radius: 10px;
   border: none;
   background-color: #ffffff;
-  color: #999999;
-  font-size: 14px;
+  color: #807ec7;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  &:hover {
-    background-color: #ffffff;
-  }
 `;
 
 export default Room;

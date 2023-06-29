@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import Styled from 'styled-components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -6,6 +7,7 @@ import moment from 'moment';
 
 import TopAppBarHome from '@/components/appBar/TopAppBarHome';
 import BottomNavigation from '@/components/navigation/BottomNav';
+import LoadingPopup from '@/components/popup/LoadingPopup';
 import WeeklyCalendar from '@/containers/schedule/WeeklyCalendar';
 import MonthlyCalendar from '@/containers/schedule/MonthlyCalendar';
 
@@ -26,7 +28,11 @@ const tempColors = [
 ];
 
 const Schedule = () => {
+  const { data: session } = useSession();
   const router = useRouter();
+
+  const [user, setUser] = useState<any>(session?.user || null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [events, setEvents] = useState<any>([]);
   const [weeklyEvents, setWeeklyEvents] = useState<any>([]);
@@ -139,6 +145,13 @@ const Schedule = () => {
   }, [events]);
 
   useEffect(() => {
+    if (!session) return;
+    if (!session.user) return;
+    setUser(session?.user);
+    setIsLoading(false);
+  }, [session]);
+
+  useEffect(() => {
     getEvents();
   }, []);
 
@@ -149,58 +162,63 @@ const Schedule = () => {
         backgroundColor: '#FAFAFF',
       }}
     >
-      <TopAppBarHome />
-      <WrapBox>
-        <CalendarDiv>
-          {weeklyEvents && (
-            <>
-              <TitleDiv>
-                <Title>
-                  {'한 주 동안 '}
-                  <RoomNameSpan>{'우리 집'}</RoomNameSpan>
-                  {' 스케줄'}
-                </Title>
-              </TitleDiv>
-              {
-                weeklyEvents.length > 0 ? (
-                  <WeeklyCalendar events={weeklyEvents} />
-                ) : (
-                  <EmptyDiv>
-                    <ScheduleIcon />
-                    <EmptyText>
-                      {'한 주 동안 예정된 스케줄이 없습니다.'}
-                    </EmptyText>
-                    <ScheduleAddText
-                      onClick={() => {
-                        router.push('/schedule/create');
-                      }}
-                    >{'새로운 스케줄 등록'}</ScheduleAddText>
-                  </EmptyDiv>
-                )
-              }
-            </>
-          )}
-          {events && (
-            <>
-              <TitleDiv>
-                <Title>
-                  {'이번 달 '}
-                  <RoomNameSpan>{'우리 집'}</RoomNameSpan>
-                  {' 스케줄'}
-                </Title>
-              </TitleDiv>
-              <MonthlyCalendar events={events} />
-            </>
-          )}
-        </CalendarDiv>
-      </WrapBox>
-      <AddEventBtn
-        onClick={() => {
-          router.push('/schedule/create');
-        }}
-      >
-        <AddIcon />
-      </AddEventBtn>
+      {isLoading && <LoadingPopup />}
+      {user && user.id && user.roomName && (
+        <>
+          <TopAppBarHome />
+          <WrapBox>
+            <CalendarDiv>
+              {weeklyEvents && (
+                <>
+                  <TitleDiv>
+                    <Title>
+                      {'한 주 '}
+                      <RoomNameSpan>{user.roomName}</RoomNameSpan>
+                      {' 스케줄'}
+                    </Title>
+                  </TitleDiv>
+                  {weeklyEvents.length > 0 ? (
+                    <WeeklyCalendar events={weeklyEvents} />
+                  ) : (
+                    <EmptyDiv>
+                      <ScheduleIcon />
+                      <EmptyText>
+                        {'한 주 동안 예정된 스케줄이 없습니다.'}
+                      </EmptyText>
+                      <ScheduleAddText
+                        onClick={() => {
+                          router.push('/schedule/create');
+                        }}
+                      >
+                        {'새로운 스케줄 등록'}
+                      </ScheduleAddText>
+                    </EmptyDiv>
+                  )}
+                </>
+              )}
+              {events && (
+                <>
+                  <TitleDiv>
+                    <Title>
+                      {'이번 달 '}
+                      <RoomNameSpan>{user.roomName}</RoomNameSpan>
+                      {' 스케줄'}
+                    </Title>
+                  </TitleDiv>
+                  <MonthlyCalendar events={events} />
+                </>
+              )}
+            </CalendarDiv>
+          </WrapBox>
+          <AddEventBtn
+            onClick={() => {
+              router.push('/schedule/create');
+            }}
+          >
+            <AddIcon />
+          </AddEventBtn>
+        </>
+      )}
       <BottomNavigation />
     </div>
   );
@@ -215,7 +233,7 @@ const WrapBox = Styled.div`
   min-height: 100vh;
 
   @media (max-width: 650px) {
-    padding-top: 80px;
+    padding-top: 70px;
   }
 `;
 const CalendarDiv = Styled.div`

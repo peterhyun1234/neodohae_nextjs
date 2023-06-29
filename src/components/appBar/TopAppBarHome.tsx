@@ -126,6 +126,10 @@ const WrapBox = Styled.div<{ scrollTop: number }>`
     justify-content: center;
     align-items: center;
     z-index: 5;
+    
+    @media(max-width: 650px) {
+        height: 70px;
+    }
 `
 const LogoBtn = Styled(Image)`
     width: 40px;

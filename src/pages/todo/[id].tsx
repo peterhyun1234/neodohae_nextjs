@@ -69,7 +69,7 @@ const WrapBox = Styled.div`
   min-height: 100vh;
 
   @media (max-width: 650px) {
-    padding-top: 80px;
+    padding-top: 70px;
   }
 `;
 

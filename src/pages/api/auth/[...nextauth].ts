@@ -57,12 +57,14 @@ const nextAuthOptions: any = {
 
             let currentUser = res.data
             if (!currentUser) {
-              currentUser = res.data;
+              res = await axios.post(`/users`, userForToken);
+              if (res.data.username) {
+                currentUser = res.data;
+              }
             } else {
               if (currentUser.roomId) {
                 res = await axios.get(`/rooms/id/${currentUser.roomId}`);
                 const currentRoom = res.data;
-                console.log('currentRoom: ', currentRoom);
                 currentUser = {
                   ...currentUser,
                   roomName: currentRoom.roomName,

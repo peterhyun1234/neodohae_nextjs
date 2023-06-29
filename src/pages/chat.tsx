@@ -8,6 +8,7 @@ import getConfig from 'next/config';
 const { publicRuntimeConfig } = getConfig();
 
 import TopAppBar from '@/components/appBar/TopAppBar';
+import LoadingPopup from '@/components/popup/LoadingPopup';
 
 const API_SERVER_URI = publicRuntimeConfig.API_SERVER_URI;
 
@@ -17,6 +18,7 @@ const Chat = () => {
   const messageEndRef = useRef<HTMLDivElement>(null);
 
   const [user, setUser] = useState<any>(session?.user || null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [socket, setSocket] = useState<any>(null);
   const [message, setMessage] = useState<any>('');
@@ -25,33 +27,6 @@ const Chat = () => {
   const scrollToBottom = () => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  useEffect(() => {
-    const newSocket = io(API_SERVER_URI + '/chat');
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.close();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!session) return;
-    const accessToken = (session as any)?.accessToken;
-    if (!accessToken) return;
-    axios
-      .get('/messages', {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        setMessages(response.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
 
   useEffect(() => {
     if (socket == null) return;
@@ -95,36 +70,72 @@ const Chat = () => {
     if (!session) return;
     if (!session.user) return;
     setUser(session?.user);
+    setIsLoading(false);
   }, [session]);
+
+  useEffect(() => {
+    const newSocket = io(API_SERVER_URI + '/chat');
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.close();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+    axios
+      .get('/messages', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setMessages(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     <div style={{ width: '100%', backgroundColor: '#FAFAFF' }}>
-      <TopAppBar title={'🏠 ' + '우리 집'}/>
-      <WrapBox>
-        {messages.map(
-          (
-            msg: any,
-            idx: string,
-          ) => (
-            <Message 
-              key={idx} 
-              isMine={user.id === msg.senderId}
-            >
-              {msg.content}
-            </Message>
-          ),
-        )}
-        <div ref={messageEndRef} />
-        <ChatInput onSubmit={sendMessage}>
-          <MessageInput
-            type="text"
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="메시지를 입력하세요..."
-          />
-          <SendButton type="submit">전송</SendButton>
-        </ChatInput>
-      </WrapBox>
+      {
+        isLoading && <LoadingPopup />
+      }
+      {
+        user && user.id && user.roomName &&
+        <>
+          <TopAppBar title={'🏠 ' + user.roomName}/>
+          <WrapBox>
+            {messages.map(
+              (
+                msg: any,
+                idx: string,
+              ) => (
+                <Message 
+                  key={idx} 
+                  isMine={user.id === msg.senderId}
+                >
+                  {msg.content}
+                </Message>
+              ),
+            )}
+            <div ref={messageEndRef} />
+            <ChatInput onSubmit={sendMessage}>
+              <MessageInput
+                type="text"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                placeholder="메시지를 입력하세요..."
+              />
+              <SendButton type="submit">전송</SendButton>
+            </ChatInput>
+          </WrapBox>
+        </>
+      }
     </div>
   );
 };

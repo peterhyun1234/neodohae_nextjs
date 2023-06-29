@@ -60,7 +60,8 @@ const WrapBox = Styled.div`
     @media (max-width: 650px) {
       box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
       border-radius: 20px 20px 0 0;
-      height: 80px;
+      border-top: solid 1px #e2e2e2;
+      height: 75px;
       width: 100%;
       position: fixed;
       bottom: 0;

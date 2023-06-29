@@ -3,9 +3,14 @@ import Styled from 'styled-components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
+import axios from 'axios';
 
 import TopAppBarHome from '@/components/appBar/TopAppBarHome';
 import BottomNavigation from '@/components/navigation/BottomNav';
+
+const deleteConfirmation = `정말로 탈퇴하시겠습니까?
+탈퇴하시면 모든 정보가 삭제되며 복구할 수 없습니다.
+`;
 
 const MyPage = () => {
   const { data: session } = useSession();
@@ -13,13 +18,14 @@ const MyPage = () => {
 
   const [user, setUser] = useState<any>(session?.user || null);
 
-
   const handleSignOut = () => {
     signOut();
   };
 
   const handleEditProfile = () => {
-    router.push('/profile');
+    alert('기능 구현 예정입니다.');
+    //TODO: edit profile
+    // router.push('/profile');
   };
 
   const handleManageRoom = () => {
@@ -27,8 +33,24 @@ const MyPage = () => {
   };
 
   const handleDeleteUser = () => {
-    alert('기능 구현 예정입니다.');
-    //TODO: deleteUser(user);
+    if (!confirm(deleteConfirmation)) return;
+
+    deleteUser();
+  };
+
+  const deleteUser = async () => {
+    if (!session) return;
+    if (!user) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    const userId = user.id;
+    await axios.delete(`/users/id/${userId}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    signOut();
   };
 
   useEffect(() => {
@@ -83,7 +105,7 @@ const WrapBox = Styled.div`
   min-height: 100vh;
 
   @media (max-width: 650px) {
-    padding-top: 80px;
+    padding-top: 70px;
   }
 
   text-align: center;
@@ -91,6 +113,8 @@ const WrapBox = Styled.div`
 const MyPageDiv = Styled.div`
   width: 100%;
   padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
 `;
 const ProfileImgDiv = Styled.div`
   display: flex;
@@ -126,19 +150,20 @@ const Divider = Styled.div`
 const Button = Styled.button`
   display: block;
   width: 100%;
-  max-width: 500px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
+  padding: 12px 0;
   height: 40px;
-  margin: 15px auto;
+  margin-bottom: 16px;
   border: none;
-  border-radius: 20px;
-  background-color: #842d7d;
-  color: #ffffff;
+  border-radius: 10px;
+  background-color: #7876fb;
+  color: #fff;
   cursor: pointer;
+  transition: background-color 0.2s;
 
   &:hover {
-    background-color: #682a69;
+    background-color: #49489a;
   }
 `;
 

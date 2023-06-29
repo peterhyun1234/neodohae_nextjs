@@ -20,7 +20,9 @@ const TopAppBar = ({title}: {title?: string}) => {
         <AppBarCenterDiv>
           <TitleText>{title}</TitleText>
         </AppBarCenterDiv>
-        <AppBarRightDiv></AppBarRightDiv>
+        <AppBarRightDiv>
+          <WhiteBox />
+        </AppBarRightDiv>
       </AppBarDetailDiv>
     </WrapBox>
   );
@@ -36,6 +38,10 @@ const WrapBox = Styled.div`
     justify-content: center;
     align-items: center;
     z-index: 5;
+    
+    @media(max-width: 650px) {
+        height: 70px;
+    }
 `;
 const AppBarDetailDiv = Styled.div`
     display: flex;
@@ -43,8 +49,8 @@ const AppBarDetailDiv = Styled.div`
     align-items: center;
     width: 100%;
     max-width: 1000px;
-    padding-right: 25px;
-    padding-left: 25px;
+    padding-right: 16px;
+    padding-left: 16px;
 `;
 const AppBarLeftDiv = Styled.div`
     display: flex;
@@ -76,9 +82,13 @@ const ArrowBackDiv = Styled.div`
     align-items: center;
 `;
 const TitleText = Styled.div`
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 500;
     color: #333333;
+`;
+const WhiteBox = Styled.div`
+    height: 40px;
+    width: 40px;
 `;
 
 export default TopAppBar;

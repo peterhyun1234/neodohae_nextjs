@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import Styled from 'styled-components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -7,6 +8,7 @@ import moment from 'moment';
 import TopAppBarHome from '@/components/appBar/TopAppBarHome';
 import Footer from '@/components/footer/Footer';
 import BottomNavigation from '@/components/navigation/BottomNav';
+import LoadingPopup from '@/components/popup/LoadingPopup';
 import WeeklyCalendar from '@/containers/schedule/WeeklyCalendar';
 import MonthlyCalendar from '@/containers/schedule/MonthlyCalendar';
 
@@ -15,7 +17,11 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
 const Home = () => {
+  const { data: session } = useSession();
   const router = useRouter();
+
+  const [user, setUser] = useState<any>(session?.user || null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [events, setEvents] = useState<any>([]);
   const [weeklyEvents, setWeeklyEvents] = useState<any>([]);
@@ -128,6 +134,13 @@ const Home = () => {
   }, [events]);
 
   useEffect(() => {
+    if (!session) return;
+    if (!session.user) return;
+    setUser(session?.user);
+    setIsLoading(false);
+  }, [session]);
+
+  useEffect(() => {
     getEvents();
   }, []);
 
@@ -138,80 +151,85 @@ const Home = () => {
         backgroundColor: '#FAFAFF',
       }}
     >
-      {<TopAppBarHome />}
-      <WrapBox>
-        <TempBoxdiv>오늘의 할일 표시 영역: 공동 TODO 할당 현황 표시</TempBoxdiv>
+      {isLoading && <LoadingPopup />}
+      {user && user.id && user.roomName && (
+        <>
+          <TopAppBarHome />
+          <WrapBox>
+            <TempBoxdiv>
+              오늘의 할일 표시 영역: 공동 TODO 할당 현황 표시
+            </TempBoxdiv>
 
-        <CalendarDiv>
-          {weeklyEvents && (
-            <>
-              <TitleDiv>
-                <Title>
-                  {'한 주 동안 '}
-                  <RoomNameSpan>{'우리 집'}</RoomNameSpan>
-                  {' 스케줄'}
-                </Title>
-                <FunctionDiv>
-                  <FunctionIcon>
-                    <CalendarMonthIcon color='inherit' fontSize='inherit'/>
-                  </FunctionIcon>
-                  <FunctionText
-                    onClick={() => {
-                      router.push('/schedule');
-                    }
-                    }
-                  >
-                    {'더보기'}
-                  </FunctionText>
-                </FunctionDiv>
-              </TitleDiv>
-              {weeklyEvents.length > 0 ? (
-                <WeeklyCalendar events={weeklyEvents} />
-              ) : (
-                <EmptyDiv>
-                  <ScheduleIcon />
-                  <EmptyText>
-                    {'한 주 동안 예정된 스케줄이 없습니다.'}
-                  </EmptyText>
-                  <ScheduleAddText
-                    onClick={() => {
-                      router.push('/schedule/create');
-                    }}
-                  >
-                    {'새로운 스케줄 등록'}
-                  </ScheduleAddText>
-                </EmptyDiv>
+            <CalendarDiv>
+              {weeklyEvents && (
+                <>
+                  <TitleDiv>
+                    <Title>
+                      {'한 주 '}
+                      <RoomNameSpan>{user.roomName}</RoomNameSpan>
+                      {' 스케줄'}
+                    </Title>
+                    <FunctionDiv>
+                      <FunctionIcon>
+                        <CalendarMonthIcon color="inherit" fontSize="inherit" />
+                      </FunctionIcon>
+                      <FunctionText
+                        onClick={() => {
+                          router.push('/schedule');
+                        }}
+                      >
+                        {'더보기'}
+                      </FunctionText>
+                    </FunctionDiv>
+                  </TitleDiv>
+                  {weeklyEvents.length > 0 ? (
+                    <WeeklyCalendar events={weeklyEvents} />
+                  ) : (
+                    <EmptyDiv>
+                      <ScheduleIcon />
+                      <EmptyText>
+                        {'한 주 동안 예정된 스케줄이 없습니다.'}
+                      </EmptyText>
+                      <ScheduleAddText
+                        onClick={() => {
+                          router.push('/schedule/create');
+                        }}
+                      >
+                        {'새로운 스케줄 등록'}
+                      </ScheduleAddText>
+                    </EmptyDiv>
+                  )}
+                </>
               )}
-            </>
-          )}
-          {events && (
-            <>
-              <TitleDiv>
-                <Title>
-                  {'이번 달 '}
-                  <RoomNameSpan>{'우리 집'}</RoomNameSpan>
-                  {' 스케줄'}
-                </Title>
-                <FunctionDiv>
-                  <FunctionIcon>
-                    <AddRoundedIcon color='inherit' fontSize='inherit'/>
-                  </FunctionIcon>
-                  <FunctionText
-                    onClick={() => {
-                      router.push('/schedule/create');
-                    }
-                    }
-                  >
-                    {'스케줄 추가'}
-                  </FunctionText>
-                </FunctionDiv>
-              </TitleDiv>
-              <MonthlyCalendar events={events} />
-            </>
-          )}
-        </CalendarDiv>
-      </WrapBox>
-      <Footer />
+              {events && (
+                <>
+                  <TitleDiv>
+                    <Title>
+                      {'이번 달 '}
+                      <RoomNameSpan>{user.roomName}</RoomNameSpan>
+                      {' 스케줄'}
+                    </Title>
+                    <FunctionDiv>
+                      <FunctionIcon>
+                        <AddRoundedIcon color="inherit" fontSize="inherit" />
+                      </FunctionIcon>
+                      <FunctionText
+                        onClick={() => {
+                          router.push('/schedule/create');
+                        }}
+                      >
+                        {'스케줄 추가'}
+                      </FunctionText>
+                    </FunctionDiv>
+                  </TitleDiv>
+                  <MonthlyCalendar events={events} />
+                </>
+              )}
+            </CalendarDiv>
+          </WrapBox>
+          <Footer />
+        </>
+      )}
       {<BottomNavigation />}
     </div>
   );
@@ -226,7 +244,7 @@ const WrapBox = Styled.div`
   min-height: 100vh;
 
   @media (max-width: 650px) {
-    padding-top: 80px;
+    padding-top: 70px;
   }
 `;
 const CalendarDiv = Styled.div`

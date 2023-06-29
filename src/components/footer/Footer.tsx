@@ -46,7 +46,7 @@ const FooterInfoTitle = Styled.div`
   margin-bottom: 20px;
 `;
 const FooterInfoDescription = Styled.div`
-  font-size: 20px;
+  font-size: 16px;
   margin-bottom: 10px;
   cursor: pointer;
 `;
@@ -57,7 +57,7 @@ const TermsDiv = Styled.div`
   margin-top: 20px;
 `;
 const TermDiv = Styled.div`
-  font-size: 20px;
+  font-size: 16px;
   text-decoration: underline;
   cursor: pointer;
 `;
