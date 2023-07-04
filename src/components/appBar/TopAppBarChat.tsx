@@ -137,6 +137,7 @@ const AppBarDetailDiv = Styled.div`
   padding-left: 16px;
 `;
 const AppBarLeftDiv = Styled.div`
+  width: calc(100% - 80px);
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -169,6 +170,9 @@ const TitleText = Styled.div`
   font-size: 18px;
   font-weight: 500;
   color: #333333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 const GroupAddDiv = Styled.div`
   height: 40px;

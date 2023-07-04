@@ -16,176 +16,86 @@ import PunchClockRoundedIcon from '@mui/icons-material/PunchClockRounded';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
-const colors = [
-  '#ffb3b3',
-  '#ffdcb3',
-  '#c0ce92',
-  '#a6d497',
-  '#92d1ab',
-  '#b3dfff',
-  '#98dbd7',
-  '#b7b3ff',
-  '#e2b3ff',
-  '#ffb3e9',
-];
-
-const tempEvents2 = [
+const tempEvents = [
   {
+    id: 1,
     title: '전현빈 약속 1',
     groupId: '전현빈',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-26T11:30:00',
+    start: '2023-07-22T10:30:00',
+    end: '2023-07-26T11:30:00',
     backgroundColor: '#ffb3b3',
   },
   {
+    id: 2,
     title: '전현빈 약속 2',
     groupId: '전현빈',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-26T11:30:00',
+    start: '2023-07-22T10:30:00',
+    end: '2023-07-26T11:30:00',
     backgroundColor: '#ffdcb3',
   },
   {
+    id: 3,
     title: '전현빈 약속 3',
     groupId: '전현빈',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-26T11:30:00',
+    start: '2023-07-22T10:30:00',
+    end: '2023-07-26T11:30:00',
     backgroundColor: '#c0ce92',
   },
   {
+    id: 4,
     title: '전현빈 약속 4',
     groupId: '전현빈',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-26T11:30:00',
+    start: '2023-07-22T10:30:00',
+    end: '2023-07-26T11:30:00',
     backgroundColor: '#a6d497',
   },
   {
+    id: 5,
     title: '전현빈 약속 5',
     groupId: '전현빈',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-26T11:30:00',
+    start: '2023-07-22T10:30:00',
+    end: '2023-07-26T11:30:00',
     backgroundColor: '#92d1ab',
   },
   {
+    id: 6,
     title: '전현빈 약속 6',
     groupId: '전현빈',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-26T11:30:00',
+    start: '2023-07-22T10:30:00',
+    end: '2023-07-26T11:30:00',
     backgroundColor: '#b3dfff',
   },
   {
+    id: 7,
     title: '전현빈 약속 7',
     groupId: '전현빈',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-26T11:30:00',
+    start: '2023-07-22T10:30:00',
+    end: '2023-07-26T11:30:00',
     backgroundColor: '#98dbd7',
   },
   {
+    id: 8,
     title: '전현빈 약속 8',
     groupId: '전현빈',
-    start: '2023-06-27T10:30:00',
-    end: '2023-06-27T11:30:00',
+    start: '2023-07-27T10:30:00',
+    end: '2023-07-27T11:30:00',
     backgroundColor: '#b7b3ff',
   },
   {
+    id: 9,
     title: '전현빈 약속 9',
     groupId: '전현빈',
-    start: '2023-06-27T10:30:00',
-    end: '2023-06-27T11:30:00',
+    start: '2023-07-27T10:30:00',
+    end: '2023-07-27T11:30:00',
     backgroundColor: '#e2b3ff',
   },
   {
+    id: 10,
     title: '전현빈 약속 10',
     groupId: '전현빈',
-    start: '2023-06-27T10:30:00',
-    end: '2023-06-27T11:30:00',
+    start: '2023-07-27T10:30:00',
+    end: '2023-07-27T11:30:00',
     backgroundColor: '#ffb3e9',
-  },
-];
-
-const tempEvents = [
-  {
-    title: '전현빈 약속 1',
-    groupId: '전현빈',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-26T11:30:00',
-    backgroundColor: '#FFB3BA',
-  },
-  {
-    title: '전현빈 약속 2',
-    groupId: '전현빈',
-    start: '2023-06-26T14:00:00',
-    end: '2023-06-26T15:00:00',
-    backgroundColor: '#FFDFBA',
-  },
-  {
-    title: '목주영 약속 5',
-    groupId: '목주영',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-27T11:30:00',
-    backgroundColor: '#FFFFBA',
-  },
-  {
-    title: '목주영 약속 4',
-    groupId: '목주영',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-27T11:30:00',
-    backgroundColor: '#BAFFC9',
-  },
-  {
-    title: '목주영 약속 6',
-    groupId: '목주영',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-27T11:30:00',
-    backgroundColor: '#BAE1FF',
-  },
-  {
-    title: '목주영 약속 3',
-    groupId: '목주영',
-    start: '2023-06-22T10:30:00',
-    end: '2023-06-27T11:30:00',
-    backgroundColor: '#BABDFF',
-  },
-  {
-    title: '목주영 약속 1',
-    groupId: '목주영',
-    start: '2023-06-27T10:30:00',
-    end: '2023-06-27T11:30:00',
-    backgroundColor: '#FFBABD',
-  },
-  {
-    title: '목주영 약속 2',
-    groupId: '목주영',
-    start: '2023-06-28T14:00:00',
-    end: '2023-06-28T15:00:00',
-    backgroundColor: '#FFBABD',
-  },
-  {
-    title: '홍솔 약속 1',
-    groupId: '홍솔',
-    start: '2023-06-18T14:00:00',
-    end: '2023-06-29T15:00:00',
-    backgroundColor: '#e895dc',
-  },
-  {
-    title: '홍솔 약속 2',
-    groupId: '홍솔',
-    start: '2023-06-22T14:00:00',
-    end: '2023-06-24T15:00:00',
-    backgroundColor: '#e895dc',
-  },
-  {
-    title: '홍솔 약속 2',
-    groupId: '홍솔',
-    start: '2023-06-27T14:00:00',
-    end: '2023-06-28T15:00:00',
-    backgroundColor: '#e895dc',
-  },
-  {
-    title: '홍솔 약속 2',
-    groupId: '홍솔',
-    start: '2023-06-28T14:00:00',
-    end: '2023-06-28T15:00:00',
-    backgroundColor: '#e895dc',
   },
 ];
 
@@ -200,7 +110,7 @@ const Home = () => {
   const [weeklyEvents, setWeeklyEvents] = useState<any>([]);
 
   const getEvents = () => {
-    setEvents(tempEvents2);
+    setEvents(tempEvents);
   };
 
   useEffect(() => {

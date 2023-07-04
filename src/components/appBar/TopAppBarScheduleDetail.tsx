@@ -5,15 +5,16 @@ import { useRouter } from 'next/router';
 import { useCopyToClipboard } from 'react-use';
 
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
+import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
-const TopAppBar = ({title}: {title?: string}) => {
+const TopAppBar = ({ title, deleteSchedule }: { title?: string, deleteSchedule: any }) => {
   const router = useRouter();
 
   return (
     <WrapBox>
       <AppBarDetailDiv>
         <AppBarLeftDiv>
-          <ArrowBackDiv onClick={()=>router.back()}>
+          <ArrowBackDiv onClick={() => router.back()}>
             <ArrowBackIosNewRoundedIcon fontSize="inherit" color="inherit" />
           </ArrowBackDiv>
         </AppBarLeftDiv>
@@ -23,7 +24,12 @@ const TopAppBar = ({title}: {title?: string}) => {
           }
         </AppBarCenterDiv>
         <AppBarRightDiv>
-          <WhiteBox />
+          {
+            deleteSchedule !== undefined &&
+            <DeleteBtnDiv onClick={() => deleteSchedule()}>
+              <DeleteForeverRoundedIcon fontSize="inherit" color="inherit" />
+            </DeleteBtnDiv>
+          }
         </AppBarRightDiv>
       </AppBarDetailDiv>
     </WrapBox>
@@ -61,7 +67,7 @@ const AppBarLeftDiv = Styled.div`
     gap: 25px;
 `;
 const AppBarCenterDiv = Styled.div`
-    width: calc(100% - 80px);
+    width: calc(100% - 120px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -92,9 +98,18 @@ const TitleText = Styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
 `;
-const WhiteBox = Styled.div`
+const DeleteBtnDiv = Styled.div`
     height: 40px;
     width: 40px;
+    color: #fff;
+    background-color: #cd4d4d;
+    border-radius: 50%;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0,0,0,0.17) 0px 0px 5px 3px;
+    cursor: pointer;
 `;
 
 export default TopAppBar;

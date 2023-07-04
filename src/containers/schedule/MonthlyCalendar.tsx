@@ -22,12 +22,7 @@ const MonthlyCalendar = ({ events }: Props) => {
   const router = useRouter();
 
   const handleEventClick = (clickInfo: EventClickArg) => {
-    //TODO: 이벤트 수정할지 삭제할 지 선택하는 모달 띄우기
-    // - 그냥 각 이벤트 페이지로 이동하는게 나을듯
-    // if (confirm(`이벤트를 정말 삭제하실건가요? '${clickInfo.event.title}'`)) {
-    //   //TODO: delete event API needed
-    //   clickInfo.event.remove();
-    // }
+    router.push(`/schedule/detail/${clickInfo.event.id}`);
   };
 
   const renderEventContent = (eventContent: EventContentArg) => {
