@@ -79,15 +79,27 @@ const Home = () => {
       const weeklyEvents = events.filter((event: any) => {
         const eventStart = moment(event.start);
         const eventEnd = moment(event.end);
-        const weekStart = moment().startOf('week');
-        const weekEnd = moment().endOf('week');
+        const weekStart = moment().startOf('day');
+        const weekEnd = moment().add(7, 'days');
         return (
           (eventStart.isSameOrAfter(weekStart) &&
             eventStart.isSameOrBefore(weekEnd)) ||
           (eventEnd.isSameOrAfter(weekStart) &&
             eventEnd.isSameOrBefore(weekEnd))
         );
+      }).sort((a: any, b: any) => {
+        const startA = moment(a.start);
+        const startB = moment(b.start);
+        const endA = moment(a.end);
+        const endB = moment(b.end);
+
+        if (startA.isSame(startB)) {
+          return endA.isAfter(endB) ? 1 : -1;
+        }
+
+        return startA.isAfter(startB) ? 1 : -1;
       });
+
       setWeeklyEvents(weeklyEvents);
     }
   }, [events]);
@@ -115,7 +127,7 @@ const Home = () => {
       {isLoading && <LoadingPopup />}
       {user && user.id && user.roomName && (
         <>
-          <TopAppBarHome roomInviteCode={user.roomInviteCode}/>
+          <TopAppBarHome roomInviteCode={user.roomInviteCode} />
           <WrapBox>
             <TempBoxdiv>
               오늘의 할일 표시 영역: 공동 TODO 할당 현황 표시
