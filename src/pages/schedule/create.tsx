@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import Styled from 'styled-components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -10,11 +11,14 @@ import TitleRoundedIcon from '@mui/icons-material/TitleRounded';
 import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
+import axios from 'axios';
 
 
 const ScheduleCreate = () => {
+    const { data: session } = useSession();
     const router = useRouter()
 
+    const [user, setUser] = useState<any>(session?.user || null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [title, setTitle] = useState<string>('')
@@ -42,30 +46,59 @@ const ScheduleCreate = () => {
             return;
         }
 
-        alert('저장 기능 구현 중입니다.');
-        setIsLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setIsLoading(false);
+        if (!session) return;
+        const accessToken = (session as any)?.accessToken;
+        if (!accessToken) return;
 
-        // TODO:
-        // fetch('/api/save', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         title,
-        //         startTime,
-        //         endTime,
-        //         description,
-        //     }),
-        // });
+        const schedule = {
+            title,
+            description,
+            startTime,
+            endTime,
+            userId: user.id,
+        };
+        setIsLoading(true);
+        try {
+            const res = await axios.post(
+                '/schedules',
+                { ...schedule },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+            if (res) {
+                if (res.status === 201) {
+                    alert('스케줄이 생성되었습니다.');
+                    setIsLoading(false);
+                    router.back();
+                }
+            }
+        } catch (error) {
+            console.error('Error creating schedule:', error);
+        }
     }
 
 
     const onCancel = () => {
         router.back();
     }
+
+    useEffect(() => {
+        if (!startTime || !endTime) return;
+        if (new Date(endTime) <= new Date(startTime)) {
+            setEndTimeMsg('끝나는 시간이 시작 시간보다 빠를 수 없습니다.');
+        } else {
+            setEndTimeMsg('');
+        }
+    }, [startTime, endTime]);
+
+    useEffect(() => {
+        if (!session) return;
+        if (!session.user) return;
+        setUser(session?.user);
+    }, [session]);
 
     useEffect(() => {
         const current = new Date();
@@ -129,37 +162,28 @@ const ScheduleCreate = () => {
                         </InputBoxIconDiv>
                         <InputBoxTitle>시간 설정</InputBoxTitle>
                     </InputBox>
-                    {
-                        startTime !== '' && endTime !== '' &&
-                        <InputBox>
-                            <TimeDiv>
-                                <Input type="datetime-local" value={startTime} onChange={(e) => {
-                                    setStartTime(e.target.value)
-                                }
-                                } />
-                                <InputMessage/>
-                            </TimeDiv>
-                            <ArrowIconDiv>
-                                <InputBoxIconDiv>
-                                    <ArrowForwardRoundedIcon fontSize='inherit' color='inherit' />
-                                </InputBoxIconDiv>
-                                <InputMessage />
-                            </ArrowIconDiv>
-                            <TimeDiv>
-                                <Input type="datetime-local" value={endTime} onChange={(e) => {
-                                    const selectedTime = new Date(e.target.value);
-                                    if (selectedTime < new Date(startTime)) {
-                                        setEndTimeMsg('끝나는 시간이 시작 시간보다 빠릅니다.');
-                                    } else {
-                                        setEndTimeMsg('');
-                                    }
-                                    setEndTime(e.target.value)
-                                }
-                                } />
-                                <InputMessage>{endTimeMsg}</InputMessage>
-                            </TimeDiv>
-                        </InputBox>
-                    }
+                    <InputBox>
+                        <TimeDiv>
+                            <Input type="datetime-local" value={startTime} onChange={(e) => {
+                                setStartTime(e.target.value)
+                            }
+                            } />
+                            <InputMessage />
+                        </TimeDiv>
+                        <ArrowIconDiv>
+                            <InputBoxIconDiv>
+                                <ArrowForwardRoundedIcon fontSize='inherit' color='inherit' />
+                            </InputBoxIconDiv>
+                            <InputMessage />
+                        </ArrowIconDiv>
+                        <TimeDiv>
+                            <Input type="datetime-local" value={endTime} onChange={(e) => {
+                                setEndTime(e.target.value)
+                            }
+                            } />
+                            <InputMessage>{endTimeMsg}</InputMessage>
+                        </TimeDiv>
+                    </InputBox>
                 </InputBoxList>
             </WrapBox>
             <ButtonBar>

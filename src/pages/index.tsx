@@ -4,6 +4,7 @@ import Styled from 'styled-components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import moment from 'moment';
+import axios from 'axios';
 
 import TopAppBarHome from '@/components/appBar/TopAppBarHome';
 import Footer from '@/components/footer/Footer';
@@ -16,89 +17,6 @@ import PunchClockRoundedIcon from '@mui/icons-material/PunchClockRounded';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
-const tempEvents = [
-  {
-    id: 1,
-    title: '전현빈 약속 1',
-    groupId: '전현빈',
-    start: '2023-07-22T10:30:00',
-    end: '2023-07-26T11:30:00',
-    backgroundColor: '#ffb3b3',
-  },
-  {
-    id: 2,
-    title: '전현빈 약속 2',
-    groupId: '전현빈',
-    start: '2023-07-22T10:30:00',
-    end: '2023-07-26T11:30:00',
-    backgroundColor: '#ffdcb3',
-  },
-  {
-    id: 3,
-    title: '전현빈 약속 3',
-    groupId: '전현빈',
-    start: '2023-07-22T10:30:00',
-    end: '2023-07-26T11:30:00',
-    backgroundColor: '#c0ce92',
-  },
-  {
-    id: 4,
-    title: '전현빈 약속 4',
-    groupId: '전현빈',
-    start: '2023-07-22T10:30:00',
-    end: '2023-07-26T11:30:00',
-    backgroundColor: '#a6d497',
-  },
-  {
-    id: 5,
-    title: '전현빈 약속 5',
-    groupId: '전현빈',
-    start: '2023-07-22T10:30:00',
-    end: '2023-07-26T11:30:00',
-    backgroundColor: '#92d1ab',
-  },
-  {
-    id: 6,
-    title: '전현빈 약속 6',
-    groupId: '전현빈',
-    start: '2023-07-22T10:30:00',
-    end: '2023-07-26T11:30:00',
-    backgroundColor: '#b3dfff',
-  },
-  {
-    id: 7,
-    title: '전현빈 약속 7',
-    groupId: '전현빈',
-    start: '2023-07-22T10:30:00',
-    end: '2023-07-26T11:30:00',
-    backgroundColor: '#98dbd7',
-  },
-  {
-    id: 8,
-    title: '전현빈 약속 8',
-    groupId: '전현빈',
-    start: '2023-07-27T10:30:00',
-    end: '2023-07-27T11:30:00',
-    backgroundColor: '#b7b3ff',
-  },
-  {
-    id: 9,
-    title: '전현빈 약속 9',
-    groupId: '전현빈',
-    start: '2023-07-27T10:30:00',
-    end: '2023-07-27T11:30:00',
-    backgroundColor: '#e2b3ff',
-  },
-  {
-    id: 10,
-    title: '전현빈 약속 10',
-    groupId: '전현빈',
-    start: '2023-07-27T10:30:00',
-    end: '2023-07-27T11:30:00',
-    backgroundColor: '#ffb3e9',
-  },
-];
-
 const Home = () => {
   const { data: session } = useSession();
   const router = useRouter();
@@ -109,8 +27,51 @@ const Home = () => {
   const [events, setEvents] = useState<any>([]);
   const [weeklyEvents, setWeeklyEvents] = useState<any>([]);
 
-  const getEvents = () => {
-    setEvents(tempEvents);
+  const transformEvents = (before: any) => {
+    const after = [];
+
+    for (const user of before.users) {
+      for (const schedule of user.schedules) {
+        after.push({
+          id: schedule.id,
+          title: schedule.title,
+          groupId: user.username,
+          start: schedule.startTime,
+          end: schedule.endTime,
+          backgroundColor: user.color,
+        });
+      }
+    }
+
+    return after;
+  }
+
+  const getEvents = async (roomId: number) => {
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    setIsLoading(true);
+    try {
+      const res = await axios.get(
+        `/rooms/${roomId}/schedules`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      if (res) {
+        if (res.status === 200) {
+          setIsLoading(false);
+          const curEvents = transformEvents(res.data);
+          setEvents(curEvents);
+        }
+      }
+    } catch (error) {
+      console.error('Error reading schedule:', error);
+    }
+
   };
 
   useEffect(() => {
@@ -132,15 +93,17 @@ const Home = () => {
   }, [events]);
 
   useEffect(() => {
+    const roomId = user?.roomId;
+    if (!roomId) return;
+    getEvents(roomId);
+  }, [user]);
+
+  useEffect(() => {
     if (!session) return;
     if (!session.user) return;
     setUser(session?.user);
     setIsLoading(false);
   }, [session]);
-
-  useEffect(() => {
-    getEvents();
-  }, []);
 
   return (
     <div

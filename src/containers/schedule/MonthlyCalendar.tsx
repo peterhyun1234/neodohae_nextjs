@@ -52,7 +52,6 @@ const MonthlyCalendar = ({ events }: Props) => {
             editable={true}
             selectable={true}
             selectMirror={true}
-            // dateClick={handleDateClick}
             eventClick={handleEventClick}
             eventContent={renderEventContent}
             eventBorderColor={'#fff'}

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 
 import TopAppBarScheduleDetail from '@/components/appBar/TopAppBarScheduleDetail';
 import Styled from 'styled-components';
@@ -11,18 +13,13 @@ import AccessTimeRoundedIcon from '@mui/icons-material/AccessTimeRounded';
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 
-const tempSchedule = {
-    id: 1,
-    title: '전현빈 일정 Temp',
-    startTime: '2023-07-10T10:10',
-    endTime: '2023-07-10T11:10',
-    description: '부산으로 자전거 타고 여행가고 싶다',
-};
-
 const ScheduleDetail = () => {
+    const { data: session } = useSession();
     const router = useRouter();
     const { id } = router.query;
 
+    const [user, setUser] = useState<any>(session?.user || null);
+    const [isMine, setIsMine] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isModified, setIsModified] = useState<boolean>(false);
     const [inputSchedule, setInputSchedule] = useState<any>(null);
@@ -34,11 +31,12 @@ const ScheduleDetail = () => {
     const [description, setDescription] = useState<string>('')
 
     const validateDateTimeFormat = (dateTime: string) => {
-        const pattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+        const pattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/;
         return pattern.test(dateTime);
     };
 
-    const onSave = () => {
+    const onSave = async () => {
+        const scheduleId = inputSchedule.id;
         if (!isModified) {
             alert('수정된 내용이 없습니다.');
             return;
@@ -55,20 +53,42 @@ const ScheduleDetail = () => {
             alert('끝나는 시간이 시작 시간보다 빠를 수 없습니다.');
             return;
         }
+        if (scheduleId === undefined) {
+            alert('잘못된 스케줄 아이디입니다.');
+            return;
+        }
 
-        // TODO:
-        // fetch('/api/save', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         title,
-        //         startTime,
-        //         endTime,
-        //         description,
-        //     }),
-        // });
+        if (!session) return;
+        const accessToken = (session as any)?.accessToken;
+        if (!accessToken) return;
+
+        const schedule = {
+            title,
+            description,
+            startTime,
+            endTime,
+        };
+        setIsLoading(true);
+        try {
+            const res = await axios.put(
+                `/schedules/${scheduleId}`,
+                { ...schedule },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+            if (res) {
+                if (res.status === 200) {
+                    alert('스케줄이 수정되었습니다.');
+                    setIsLoading(false);
+                    router.back();
+                }
+            }
+        } catch (error) {
+            console.error('Error modifying schedule:', error);
+        }
     }
 
     const onCancel = () => {
@@ -76,26 +96,96 @@ const ScheduleDetail = () => {
     }
 
     const getSchedule = async (id: number) => {
-        //TODO: api needed
+        const scheduleId = id;
+
+        if (!session) return;
+        const accessToken = (session as any)?.accessToken;
+        if (!accessToken) return;
+
         setIsLoading(true);
-        const fetchedSchedule = tempSchedule;
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        setInputSchedule(fetchedSchedule);
-        setIsLoading(false);
+        try {
+            const res = await axios.get(
+                `/schedules/${scheduleId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                },
+            );
+            if (res) {
+                if (res.status === 200 && res.data) {
+                    const curSchedule = res.data;
+                    setInputSchedule({
+                        id: curSchedule.id,
+                        title: curSchedule.title,
+                        description: curSchedule.description,
+                        startTime: curSchedule.startTime,
+                        endTime: curSchedule.endTime,
+
+                    });
+                    setIsMine(user.id === curSchedule?.userId);
+                    setIsLoading(false);
+                } else {
+                    alert('스케줄을 불러오는 데 실패했습니다.');
+                    setIsLoading(false);
+                }
+            }
+        } catch (error) {
+            console.error('Error reading schedule:', error);
+        }
     };
 
     const deleteSchedule = async () => {
-        //TODO: api needed
-        alert('삭제하시겠습니까?(기능 구현 중)');
+        if (!session) return;
+        const accessToken = (session as any)?.accessToken;
+        if (!accessToken) return;
+
+        const scheduleId = inputSchedule.id;
+        if (scheduleId === undefined) {
+            alert('잘못된 스케줄 아이디입니다.');
+            return;
+        }
+
+        if (window.confirm('정말로 스케줄을 삭제하시겠습니까?')) {
+            setIsLoading(true);
+            try {
+                const res = await axios.delete(
+                    `/schedules/${scheduleId}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    },
+                );
+                if (res) {
+                    if (res.status === 200) {
+                        alert('스케줄이 삭제되었습니다.');
+                        setIsLoading(false);
+                        router.back();
+                    }
+                }
+            } catch (error) {
+                console.error('Error deleting schedule:', error);
+            }
+        }
     };
+
+    useEffect(() => {
+        if (!startTime || !endTime) return;
+        if (new Date(endTime) <= new Date(startTime)) {
+            setEndTimeMsg('끝나는 시간이 시작 시간보다 빠를 수 없습니다.');
+        } else {
+            setEndTimeMsg('');
+        }
+    }, [startTime, endTime]);
 
     useEffect(() => {
         const updatingSchedule = {
             id: inputSchedule?.id,
             title,
+            description,
             startTime,
             endTime,
-            description,
         };
         if (JSON.stringify(updatingSchedule) !== JSON.stringify(inputSchedule)) {
             setIsModified(true);
@@ -114,13 +204,19 @@ const ScheduleDetail = () => {
 
     useEffect(() => {
         if (!id) return;
-        console.log('id: ', id)
+        if (!user) return;
         if (id && Number.isInteger(Number(id)) && Number(id) >= 1) {
             getSchedule(Number(id));
         } else {
             alert("잘못된 스케줄 아이디입니다.");
         }
-    }, [id]);
+    }, [id, user]);
+
+    useEffect(() => {
+        if (!session) return;
+        if (!session.user) return;
+        setUser(session?.user);
+    }, [session]);
 
     return (
         <>
@@ -128,7 +224,7 @@ const ScheduleDetail = () => {
             {
                 inputSchedule &&
                 <>
-                    <TopAppBarScheduleDetail title={inputSchedule?.title} deleteSchedule={deleteSchedule} />
+                    <TopAppBarScheduleDetail title={inputSchedule?.title} deleteSchedule={deleteSchedule} isMine={isMine} />
                     <WrapBox>
                         <InputBoxList>
                             <InputBox>
@@ -143,6 +239,7 @@ const ScheduleDetail = () => {
                                     fullWidth
                                     value={title}
                                     onChange={(e) => {
+                                        if (!isMine) return;
                                         if (e.target.value.length > 10) {
                                             alert('제목은 10자 이하로 입력해주세요.');
                                             return;
@@ -164,6 +261,7 @@ const ScheduleDetail = () => {
                                     fullWidth
                                     value={description}
                                     onChange={(e) => {
+                                        if (!isMine) return;
                                         if (e.target.value.length > 100) {
                                             alert('설명은 100자 이하로 입력해주세요.');
                                             return;
@@ -179,62 +277,68 @@ const ScheduleDetail = () => {
                                 </InputBoxIconDiv>
                                 <InputBoxTitle>시간 설정</InputBoxTitle>
                             </InputBox>
-                            {
-                                startTime !== '' && endTime !== '' &&
-                                <InputBox>
-                                    <TimeDiv>
-                                        <Input type="datetime-local" value={startTime} onChange={(e) => {
+                            <InputBox>
+                                <TimeDiv>
+                                    <Input
+                                        type="datetime-local"
+                                        value={startTime}
+                                        onChange={(e) => {
                                             setStartTime(e.target.value)
-                                        }
-                                        } />
-                                        <InputMessage />
-                                    </TimeDiv>
-                                    <ArrowIconDiv>
-                                        <InputBoxIconDiv>
-                                            <ArrowForwardRoundedIcon fontSize='inherit' color='inherit' />
-                                        </InputBoxIconDiv>
-                                        <InputMessage />
-                                    </ArrowIconDiv>
-                                    <TimeDiv>
-                                        <Input type="datetime-local" value={endTime} onChange={(e) => {
-                                            const selectedTime = new Date(e.target.value);
-                                            if (selectedTime < new Date(startTime)) {
-                                                setEndTimeMsg('끝나는 시간이 시작 시간보다 빠릅니다.');
-                                            } else {
-                                                setEndTimeMsg('');
-                                            }
+                                        }}
+                                        readOnly={!isMine}
+                                    />
+                                    <InputMessage />
+                                </TimeDiv>
+                                <ArrowIconDiv>
+                                    <InputBoxIconDiv>
+                                        <ArrowForwardRoundedIcon fontSize='inherit' color='inherit' />
+                                    </InputBoxIconDiv>
+                                    <InputMessage />
+                                </ArrowIconDiv>
+                                <TimeDiv>
+                                    <Input
+                                        type="datetime-local"
+                                        value={endTime}
+                                        onChange={(e) => {
                                             setEndTime(e.target.value)
-                                        }
-                                        } />
-                                        <InputMessage>{endTimeMsg}</InputMessage>
-                                    </TimeDiv>
-                                </InputBox>
-                            }
+                                        }}
+                                        readOnly={!isMine}
+                                    />
+                                    <InputMessage>{endTimeMsg}</InputMessage>
+                                </TimeDiv>
+                            </InputBox>
                         </InputBoxList>
                     </WrapBox>
                     <ButtonBar>
-                        <CancelButton onClick={onCancel}>취소</CancelButton>
-                        <SaveButton 
-                            onClick={() => {
-                                if (!isModified) {
-                                    alert('수정된 내용이 없습니다.');
-                                    return;
-                                }
-                                if (!title.trim()) {
-                                    alert('제목을 입력해주세요.');
-                                    return;
-                                }
-                                if (!validateDateTimeFormat(startTime) || !validateDateTimeFormat(endTime)) {
-                                    alert('시작 시간 또는 끝나는 시간이 잘못된 형식입니다.');
-                                    return;
-                                }
-                                if (new Date(endTime) <= new Date(startTime)) {
-                                    alert('끝나는 시간이 시작 시간보다 빠를 수 없습니다.');
-                                    return;
-                                }
-                                onSave();
-                            }} 
-                            isActivated={isModified && title.trim() && (validateDateTimeFormat(startTime) && validateDateTimeFormat(endTime)) && (new Date(endTime) > new Date(startTime)) ? true : false}>수정</SaveButton>
+                        {
+                            isMine ?
+                                <>
+                                    <CancelButton onClick={onCancel}>취소</CancelButton>
+                                    <SaveButton
+                                        onClick={() => {
+                                            if (!isModified) {
+                                                alert('수정된 내용이 없습니다.');
+                                                return;
+                                            }
+                                            if (!title.trim()) {
+                                                alert('제목을 입력해주세요.');
+                                                return;
+                                            }
+                                            if (!validateDateTimeFormat(startTime) || !validateDateTimeFormat(endTime)) {
+                                                alert('시작 시간 또는 끝나는 시간이 잘못된 형식입니다.');
+                                                return;
+                                            }
+                                            if (new Date(endTime) <= new Date(startTime)) {
+                                                alert('끝나는 시간이 시작 시간보다 빠를 수 없습니다.');
+                                                return;
+                                            }
+                                            onSave();
+                                        }}
+                                        isActivated={isModified && title.trim() && (validateDateTimeFormat(startTime) && validateDateTimeFormat(endTime)) && (new Date(endTime) > new Date(startTime)) ? true : false}>수정</SaveButton>
+                                </>
+                                :
+                                <CancelButton onClick={onCancel}>확인</CancelButton>
+                        }
                     </ButtonBar>
                 </>
             }

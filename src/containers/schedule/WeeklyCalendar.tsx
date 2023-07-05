@@ -28,7 +28,6 @@ const WeeklyCalendar = ({events}: Props) => {
     throw new Error('Bad Hex');
   };
 
-
   return (
     <>
     {
@@ -39,6 +38,9 @@ const WeeklyCalendar = ({events}: Props) => {
             <EventDiv
               key={index}
               bgColor={hexToRgbA(event.backgroundColor, 0.4)}
+              onClick={() => {
+                router.push(`/schedule/detail/${event.id}`);
+              }}
             >
               <EventIconDiv bgColor={hexToRgbA(event.backgroundColor, 0.5)}>
                 <EventAvailableRoundedIcon

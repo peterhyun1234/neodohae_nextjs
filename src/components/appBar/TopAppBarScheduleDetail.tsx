@@ -7,7 +7,7 @@ import { useCopyToClipboard } from 'react-use';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
 
-const TopAppBar = ({ title, deleteSchedule }: { title?: string, deleteSchedule: any }) => {
+const TopAppBar = ({ title, deleteSchedule, isMine }: { title?: string, deleteSchedule: any, isMine?: boolean }) => {
   const router = useRouter();
 
   return (
@@ -25,10 +25,12 @@ const TopAppBar = ({ title, deleteSchedule }: { title?: string, deleteSchedule: 
         </AppBarCenterDiv>
         <AppBarRightDiv>
           {
-            deleteSchedule !== undefined &&
+            isMine && deleteSchedule !== undefined ?
             <DeleteBtnDiv onClick={() => deleteSchedule()}>
               <DeleteForeverRoundedIcon fontSize="inherit" color="inherit" />
             </DeleteBtnDiv>
+            :
+            <WhiteBox />
           }
         </AppBarRightDiv>
       </AppBarDetailDiv>
@@ -110,6 +112,10 @@ const DeleteBtnDiv = Styled.div`
     align-items: center;
     box-shadow: rgba(0,0,0,0.17) 0px 0px 5px 3px;
     cursor: pointer;
+`;
+const WhiteBox = Styled.div`
+    height: 40px;
+    width: 40px;
 `;
 
 export default TopAppBar;
