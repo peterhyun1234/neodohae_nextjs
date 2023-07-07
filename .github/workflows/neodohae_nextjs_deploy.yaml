@@ -53,13 +53,15 @@ jobs:
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-    - name: Install and configure AWS CLI
+    - name: Update values.yaml and push to repository
       run: |
-        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-        unzip awscliv2.zip
-        sudo ./aws/install --update
+        # Update values.yaml with the new image tag
+        sed -i "s|image.tag:.*|image.tag: ${IMAGE_TAG}|g" neodohae_nextjs/values.yaml
 
-    - name: Deploy to EKS
-      run: |
-        aws eks update-kubeconfig --region ${{ env.AWS_REGION }} --name ${{ env.EKS_CLUSTER_NAME }}
-        kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.CONTAINER_NAME }}=${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
+        # Configure Git
+        git config --global user.name 'peter jeon'
+        git config --global user.email 'peterhyun1234@gmail.com'
+
+        # Commit and push the changes
+        git commit -am "feat: update image tag to ${IMAGE_TAG}"
+        git push https://${{ secrets.GITHUB_TOKEN }}@github.com/peterhyun1234/neodohae_helm_charts.git
