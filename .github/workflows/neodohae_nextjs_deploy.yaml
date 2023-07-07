@@ -75,4 +75,9 @@ jobs:
 
         git add .
         git commit -m "feat: update image tag to ${IMAGE_TAG}" || echo "No changes to commit"
-        git push https://${{ secrets.GITHUB_TOKEN }}@github.com/peterhyun1234/neodohae_helm_charts.git
+
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: 'https://github.com/peterhyun1234/neodohae_helm_charts.git'
