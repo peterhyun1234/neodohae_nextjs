@@ -80,4 +80,4 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: 'https://github.com/peterhyun1234/neodohae_helm_charts.git'
+        branch: 'main'
