@@ -10,6 +10,7 @@ import axios from 'axios';
 import TopAppBar from '@/components/appBar/TopAppBar';
 import LoadingPopup from '@/components/popup/LoadingPopup';
 
+import TextField from '@mui/material/TextField';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 
@@ -22,6 +23,9 @@ const RoomManagement = () => {
 
   const [isCopied, copyToClipboard] = useCopyToClipboard();
   const [user, setUser] = useState<any>(session?.user || null);
+
+  const [changingRoomName, setChangingRoomName] = useState<string>('');
+  const [isReadyToEdit, setIsReadyToEdit] = useState<boolean>(false);
 
   const getRoommates = async () => {
     if (!session) return;
@@ -63,6 +67,35 @@ const RoomManagement = () => {
     }
   };
 
+  const changeRoomName = async (roomName: string) => {
+    if (!roomName || roomName === '' || roomName.length > 8) {
+      alert('룸 이름은 1글자 이상 8글자 이하로 설정해주세요.');
+      return;
+    }
+
+    if (!session) return;
+    if (!user) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    const roomId = user.roomId;
+    const res = await axios.put(`/rooms/id/${roomId}`, { roomName }, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    if (res) {
+      if (res.status === 200) {
+        const updatedUser = user;
+        updatedUser.roomName = roomName;
+        await update({ ...session, user: updatedUser });
+        setUser(updatedUser);
+        setIsReadyToEdit(false);
+        setChangingRoomName('');
+      }
+    }
+  };
+
   const handleCopyClick = () => {
     if (!user) return;
     const roomInviteCode = user.roomInviteCode;
@@ -98,9 +131,35 @@ const RoomManagement = () => {
               roommates.length > 0 && (
                 <>
                   <Section>
-                    {/*TODO: 방이름 수정 */}
                     <RoomNameDiv>
-                      <RoomName>{'🏠 ' + user.roomName}</RoomName>
+                      {
+                        isReadyToEdit ? (
+                          <>
+                            <TextField
+                              label="룸 이름"
+                              variant="standard"
+                              value={changingRoomName}
+                              onChange={(e) => setChangingRoomName(e.target.value)}
+                            />
+                            <EditButtonDiv onClick={() => {
+                              if (changingRoomName === user.roomName) {
+                                setIsReadyToEdit(false);
+                                setChangingRoomName('');
+                                return;
+                              }
+                              changeRoomName(changingRoomName);
+                            }}>저장</EditButtonDiv>
+                          </>
+                        ) : (
+                          <>
+                            <RoomName>{'🏠 ' + user.roomName}</RoomName>
+                            <EditButtonDiv onClick={() => {
+                              setIsReadyToEdit(true);
+                              setChangingRoomName(user.roomName);
+                            }}>이름 수정</EditButtonDiv>
+                          </>
+                        )
+                      }
                     </RoomNameDiv>
                   </Section>
                   <Section>
@@ -178,6 +237,7 @@ const RoomNameDiv = Styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
   gap: 1rem;
   padding: 1rem;
 `;
@@ -188,6 +248,24 @@ const RoomName = Styled.div`
   border-radius: 10px;
   padding: 3px 10px;
   box-shadow: rgb(231 206 255) 0px -3px 5px 0px inset;
+`;
+const EditButtonDiv = Styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #333333;
+  font-size: 0.8rem;
+  border: dashed 1px #0f0a0a;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f2f2f2;
+  }
 `;
 const Button = Styled.button`
   width: 100%;
