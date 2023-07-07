@@ -15,6 +15,8 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ needs.build-and-push.outputs.IMAGE_TAG }}
 
     steps:
     - name: Checkout neodohae_nextjs repository
@@ -52,6 +54,7 @@ jobs:
         echo "PORT=${{ secrets.PORT }}" >> .env.production
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=IMAGE_TAG::$IMAGE_TAG"
 
     - name: Checkout neodohae_helm_charts repository
       uses: actions/checkout@v2
@@ -65,7 +68,7 @@ jobs:
 
     - name: Update values.yaml and push to repository
       run: |
-        yq e ".image.tag = \"${IMAGE_TAG}\"" -i neodohae_nextjs/values.yaml
+        yq e ".image.tag = env(IMAGE_TAG)" -i neodohae_nextjs/values.yaml
         cat neodohae_nextjs/values.yaml
 
         git config --global user.name 'peter jeon'
