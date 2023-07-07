@@ -60,8 +60,8 @@ jobs:
 
     - name: Update values.yaml and push to repository
       run: |
-        sed -i "s|image.tag:.*|image.tag: ${IMAGE_TAG}|g" neodohae_helm_charts/neodohae_nextjs/values.yaml
-        cat neodohae_helm_charts/neodohae_nextjs/values.yaml
+        sed -i "s|image.tag:.*|image.tag: ${IMAGE_TAG}|g" neodohae_nextjs/values.yaml
+        cat neodohae_nextjs/values.yaml
 
         git config --global user.name 'peter jeon'
         git config --global user.email 'peterhyun1234@gmail.com'
