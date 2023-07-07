@@ -82,9 +82,6 @@ const nextAuthOptions: any = {
         }
       } else if (trigger === 'update') {
         token.user = session.user;
-      } else if (trigger === 'signOut') {
-        //TODO: signOut
-        console.log('signOut');
       }
       return token;
     },
