@@ -17,8 +17,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    - name: Checkout neodohae_nextjs repository
       uses: actions/checkout@v2
+
+    - name: Checkout neodohae_helm_charts repository
+      uses: actions/checkout@v2
+      with:
+        repository: peterhyun1234/neodohae_helm_charts
+        token: ${{ secrets.GITHUB_TOKEN }}
+        path: neodohae_helm_charts
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
@@ -62,6 +69,8 @@ jobs:
         git config --global user.name 'peter jeon'
         git config --global user.email 'peterhyun1234@gmail.com'
 
-        # Commit and push the changes
-        git commit -am "feat: update image tag to ${IMAGE_TAG}"
+        # Change to the neodohae_helm_charts directory and commit/push the changes
+        cd neodohae_helm_charts
+        git add .
+        git commit -m "feat: update image tag to ${IMAGE_TAG}"
         git push https://${{ secrets.GITHUB_TOKEN }}@github.com/peterhyun1234/neodohae_helm_charts.git
