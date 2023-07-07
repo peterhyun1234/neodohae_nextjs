@@ -58,9 +58,14 @@ jobs:
       with:
         repository: peterhyun1234/neodohae_helm_charts
 
+    - name: Install yq
+      run: |
+        sudo wget -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download/v4.6.1/yq_linux_amd64
+        sudo chmod +x /usr/bin/yq
+
     - name: Update values.yaml and push to repository
       run: |
-        sed -i "s|image.tag:.*|image.tag: ${IMAGE_TAG}|g" neodohae_nextjs/values.yaml
+        yq e ".image.tag = \"${IMAGE_TAG}\"" -i neodohae_nextjs/values.yaml
         cat neodohae_nextjs/values.yaml
 
         git config --global user.name 'peter jeon'
@@ -68,4 +73,4 @@ jobs:
 
         git add .
         git commit -m "feat: update image tag to ${IMAGE_TAG}" || echo "No changes to commit"
-        git push https://${{ secrets.GITHUB_TOKEN }}@github.com/peterhyun1234/neodohae_helm_charts.git
+        git push https://${{ secrets.PAT }}@github.com/peterhyun1234/neodohae_helm_charts.git
