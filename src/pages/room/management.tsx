@@ -137,7 +137,7 @@ const RoomManagement = () => {
                           <>
                             <TextField
                               label="룸 이름"
-                              variant="standard"
+                              variant="outlined"
                               value={changingRoomName}
                               onChange={(e) => setChangingRoomName(e.target.value)}
                             />

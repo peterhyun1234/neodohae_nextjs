@@ -23,9 +23,7 @@ const MyPage = () => {
   };
 
   const handleEditProfile = () => {
-    alert('기능 구현 예정입니다.');
-    //TODO: edit profile
-    // router.push('/profile');
+    router.push('/profile');
   };
 
   const handleManageRoom = () => {
