@@ -84,17 +84,19 @@ const Chat = () => {
       router.push('/room');
       return;
     }
-    const sedingMessage = {
+    const sendingMessage = {
       senderId,
       roomId,
       content: trimmedMessage,
     };
-    socket.emit('message', sedingMessage);
+    socket.emit('message', sendingMessage);
     setMessage('');
   };
 
   const getRoommates = async (accessToken: string) => {
     const roomId = user.roomId;
+    socket.emit('joinRoom', roomId);
+
     await axios
       .get(`/rooms/${roomId}/users`, {
         headers: {
@@ -126,7 +128,7 @@ const Chat = () => {
   };
 
   useEffect(() => {
-    if (socket == null) return;
+    if (socket === null) return;
     socket.on('newMessage', (message: any) => {
       setMessages((oldMsgs: any) => [...oldMsgs, message]);
     });
@@ -147,9 +149,11 @@ const Chat = () => {
     const accessToken = (session as any)?.accessToken;
     if (!accessToken) return;
 
+    if (socket === null) return;
+
     getRoommates(accessToken);
     getMessages(accessToken);
-  }, [user]);
+  }, [user, socket]);
 
   useEffect(() => {
     if (!session) return;

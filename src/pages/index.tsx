@@ -83,7 +83,8 @@ const Home = () => {
     const permission = await Notification.requestPermission();
     
     if (permission !== 'granted') {
-      throw new Error('Permission not granted for Notification');
+      console.error('Permission not granted for Notification');
+      return;
     }
   
     const serviceWorker = await navigator.serviceWorker.ready;
