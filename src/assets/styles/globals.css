@@ -103,10 +103,6 @@ input:-ms-input-placeholder {
   display: none;
 }
 
-.MuiBottomNavigation-root {
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-
 .slick-slider .slick-list {
   padding-left: 20px;
 }
