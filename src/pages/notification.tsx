@@ -9,7 +9,11 @@ import LoadingPopup from '@/components/popup/LoadingPopup';
 
 import LOGO from '@/assets/images/neodohae_logo.png';
 
-const Notification = () => {
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const VAPID_PUBLIC_KEY = publicRuntimeConfig.VAPID_PUBLIC_KEY;
+
+const NotificationPage = () => {
   const { data: session } = useSession();
 
   const [user, setUser] = useState<any>(session?.user || null);
@@ -70,10 +74,38 @@ const Notification = () => {
     }
   };
 
+  const requestNotificationPermissionAndSubscribe = async () => {
+    const permission = await Notification.requestPermission();
+  
+    const serviceWorker = await navigator.serviceWorker.ready;
+    const subscription = await serviceWorker.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: VAPID_PUBLIC_KEY,
+    });
+
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    await axios.post(
+        '/subscriptions',
+        {
+          userId: user.id,
+          subscription: subscription,
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        },
+    );
+  }
+
   useEffect(() => {
     const roomId = user?.roomId;
     if (!roomId) return;
     getNotifications();
+    requestNotificationPermissionAndSubscribe();
   }, [user]);
 
   useEffect(() => {
@@ -208,4 +240,4 @@ const NoNotification = Styled.div`
 
 
 
-export default Notification;
+export default NotificationPage;

@@ -81,11 +81,6 @@ const Home = () => {
 
   const requestNotificationPermissionAndSubscribe = async () => {
     const permission = await Notification.requestPermission();
-    
-    if (permission !== 'granted') {
-      alert('Permission not granted for Notification');
-      // return;
-    }
   
     const serviceWorker = await navigator.serviceWorker.ready;
     const subscription = await serviceWorker.pushManager.subscribe({
