@@ -23,6 +23,9 @@ const CustomBottomNavigation = styled(BottomNavigation)({
   "& .MuiButtonBase-root": {
     minWidth: "70px",
   },
+  "& .MuiBottomNavigation-root": {
+    padding: "0px",
+  },
 });
 
 const BottomNav = () => {
@@ -70,7 +73,7 @@ const WrapBox = Styled.div`
       z-index: 5;
       background: #ffffff;
       padding-top: 10px;
-      padding-bottom: 10px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
     }
 `
 
