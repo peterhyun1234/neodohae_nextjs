@@ -2,6 +2,9 @@
 const withPlugins = require('next-compose-plugins');
 const withPWA = require('next-pwa')({
   dest: 'public',
+  register: true,
+  skipWaiting: true,
+  customWorkerDir: 'worker',
 });
 
 const nextConfig = {
@@ -9,6 +12,7 @@ const nextConfig = {
   swcMinify: true,
   publicRuntimeConfig: {
     API_SERVER_URI: process.env.API_SERVER_URI,
+    VAPID_PUBLIC_KEY: process.env.VAPID_PUBLIC_KEY,
   },
   experimental: {
     scrollRestoration: true,

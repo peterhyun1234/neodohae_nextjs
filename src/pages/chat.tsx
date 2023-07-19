@@ -5,14 +5,14 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { io } from 'socket.io-client';
-import getConfig from 'next/config';
-const { publicRuntimeConfig } = getConfig();
 
 import TopAppBarChat from '@/components/appBar/TopAppBarChat';
 import LoadingPopup from '@/components/popup/LoadingPopup';
 
 import SendIcon from '@mui/icons-material/Send';
 
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
 const API_SERVER_URI = publicRuntimeConfig.API_SERVER_URI;
 
 const Chat = () => {

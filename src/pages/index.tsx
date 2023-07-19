@@ -17,6 +17,10 @@ import PunchClockRoundedIcon from '@mui/icons-material/PunchClockRounded';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 
+import getConfig from 'next/config';
+const { publicRuntimeConfig } = getConfig();
+const VAPID_PUBLIC_KEY = publicRuntimeConfig.VAPID_PUBLIC_KEY;
+
 const Home = () => {
   const { data: session } = useSession();
   const router = useRouter();
@@ -71,8 +75,39 @@ const Home = () => {
     } catch (error) {
       console.error('Error reading schedule:', error);
     }
-
   };
+
+  const requestNotificationPermissionAndSubscribe = async () => {
+    const permission = await Notification.requestPermission();
+    
+    if (permission !== 'granted') {
+      throw new Error('Permission not granted for Notification');
+    }
+  
+    const serviceWorker = await navigator.serviceWorker.ready;
+    const subscription = await serviceWorker.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: VAPID_PUBLIC_KEY,
+    });
+
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    await axios.post(
+        '/subscriptions',
+        {
+          userId: user.id,
+          subscription: subscription,
+        },
+        {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        },
+    );
+  }
+  
 
   useEffect(() => {
     if (events.length > 0) {
@@ -108,6 +143,7 @@ const Home = () => {
     const roomId = user?.roomId;
     if (!roomId) return;
     getEvents(roomId);
+    requestNotificationPermissionAndSubscribe();
   }, [user]);
 
   useEffect(() => {
@@ -132,7 +168,6 @@ const Home = () => {
             <TempBoxdiv>
               오늘의 할일 표시 영역: 공동 TODO 할당 현황 표시
             </TempBoxdiv>
-
             <CalendarDiv>
               {weeklyEvents && (
                 <>

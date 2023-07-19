@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "env-cmd -f .env.development next dev",
-    "dev:prod": "env-cmd -f .env.test next dev",
+    "dev:prod": "env-cmd -f .env.production next dev",
+    "build:dev": "env-cmd -f .env.development next build",
     "build": "env-cmd -f .env.production next build",
-    "start": "next start",
+    "start": "env-cmd -f .env.production next start",
     "docker:build": "docker build --pull --rm -f \"Dockerfile\" -t neodohae_nextjs:latest \".\" ",
     "docker:run": "docker run -d -p 4100:4100 neodohae_nextjs",
     "pm2": "pm2 list && pm2-runtime start pm2.json",
