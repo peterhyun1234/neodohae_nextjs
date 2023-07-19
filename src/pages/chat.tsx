@@ -278,7 +278,10 @@ const WrapBox = Styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 80px 20px 80px 20px;
+  padding-top: 80px;
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  padding-left: 20px;
+  padding-right: 20px;
   min-height: 100vh;
   margin: 0 auto;
   flex-grow: 1;
