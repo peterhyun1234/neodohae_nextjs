@@ -300,7 +300,7 @@ const ScheduleAddText = Styled.div`
 `;
 const AddEventBtn = Styled.div`
   position: fixed;
-  bottom: 100px;
+  bottom: calc(100px + env(safe-area-inset-bottom));
   right: 100px;
   width: 70px;
   height: 70px;
@@ -315,7 +315,7 @@ const AddEventBtn = Styled.div`
   @media (max-width: 650px) {
     width: 50px;
     height: 50px;
-    bottom: 90px;
+    bottom: calc(90px + env(safe-area-inset-bottom));
     right: 20px;
   }
 `;
