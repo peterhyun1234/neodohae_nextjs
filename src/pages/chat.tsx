@@ -286,6 +286,7 @@ const BottomNavBarChat = Styled.div`
   bottom: 0;
   left: 0;
   padding: 10px 20px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom)); 
   background-color: #fff;
   border-top: 1px solid #ddd;
 `;

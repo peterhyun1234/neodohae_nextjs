@@ -61,7 +61,7 @@ const WrapBox = Styled.div`
       box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
       border-radius: 20px 20px 0 0;
       border-top: solid 1px #e2e2e2;
-      height: 75px;
+      height: calc(75px + env(safe-area-inset-bottom));
       width: 100%;
       position: fixed;
       bottom: 0;
@@ -70,7 +70,9 @@ const WrapBox = Styled.div`
       align-items: center;
       z-index: 5;
       background: #ffffff;
+      padding-bottom: env(safe-area-inset-bottom);
     }
 `
+
 
 export default BottomNav;

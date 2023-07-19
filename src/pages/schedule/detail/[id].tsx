@@ -441,6 +441,7 @@ const ButtonBar = Styled.div`
     align-items: center;
     border-top: 1px solid #f6f6f6;
     padding: 10px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
     gap: 10px;
 `
 const CancelButton = Styled.button`
