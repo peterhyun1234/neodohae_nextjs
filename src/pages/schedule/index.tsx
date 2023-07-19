@@ -22,6 +22,8 @@ const Schedule = () => {
   const [user, setUser] = useState<any>(session?.user || null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const [notiNumToRead, setNotiNumToRead] = useState<any>(0);
+
   const [events, setEvents] = useState<any>([]);
   const [weeklyEvents, setWeeklyEvents] = useState<any>([]);
 
@@ -42,7 +44,7 @@ const Schedule = () => {
     }
 
     return after;
-  }
+  };
 
   const getEvents = async (roomId: number) => {
     if (!session) return;
@@ -51,14 +53,11 @@ const Schedule = () => {
 
     setIsLoading(true);
     try {
-      const res = await axios.get(
-        `/rooms/${roomId}/schedules`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+      const res = await axios.get(`/rooms/${roomId}/schedules`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         },
-      );
+      });
       if (res) {
         if (res.status === 200) {
           setIsLoading(false);
@@ -69,34 +68,63 @@ const Schedule = () => {
     } catch (error) {
       console.error('Error reading schedule:', error);
     }
+  };
 
+  const getNotifications = async () => {
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    try {
+      const res = await axios.get(`/notifications/user/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (res) {
+        if (res.status === 200) {
+          const notifications = res.data;
+          let numToRead = 0;
+          for (const noti of notifications) {
+            if (!noti.isRead) {
+              numToRead++;
+            }
+          }
+          setNotiNumToRead(numToRead);
+        }
+      }
+    } catch (error) {
+      console.error('Error reading notifications:', error);
+    }
   };
 
   useEffect(() => {
     if (events.length > 0) {
-      const weeklyEvents = events.filter((event: any) => {
-        const eventStart = moment(event.start);
-        const eventEnd = moment(event.end);
-        const weekStart = moment().startOf('day');
-        const weekEnd = moment().add(7, 'days');
-        return (
-          (eventStart.isSameOrAfter(weekStart) &&
-            eventStart.isSameOrBefore(weekEnd)) ||
-          (eventEnd.isSameOrAfter(weekStart) &&
-            eventEnd.isSameOrBefore(weekEnd))
-        );
-      }).sort((a: any, b: any) => {
-        const startA = moment(a.start);
-        const startB = moment(b.start);
-        const endA = moment(a.end);
-        const endB = moment(b.end);
+      const weeklyEvents = events
+        .filter((event: any) => {
+          const eventStart = moment(event.start);
+          const eventEnd = moment(event.end);
+          const weekStart = moment().startOf('day');
+          const weekEnd = moment().add(7, 'days');
+          return (
+            (eventStart.isSameOrAfter(weekStart) &&
+              eventStart.isSameOrBefore(weekEnd)) ||
+            (eventEnd.isSameOrAfter(weekStart) &&
+              eventEnd.isSameOrBefore(weekEnd))
+          );
+        })
+        .sort((a: any, b: any) => {
+          const startA = moment(a.start);
+          const startB = moment(b.start);
+          const endA = moment(a.end);
+          const endB = moment(b.end);
 
-        if (startA.isSame(startB)) {
-          return endA.isAfter(endB) ? 1 : -1;
-        }
+          if (startA.isSame(startB)) {
+            return endA.isAfter(endB) ? 1 : -1;
+          }
 
-        return startA.isAfter(startB) ? 1 : -1;
-      });
+          return startA.isAfter(startB) ? 1 : -1;
+        });
 
       setWeeklyEvents(weeklyEvents);
     }
@@ -106,6 +134,7 @@ const Schedule = () => {
     const roomId = user?.roomId;
     if (!roomId) return;
     getEvents(roomId);
+    getNotifications();
   }, [user]);
 
   useEffect(() => {
@@ -125,7 +154,10 @@ const Schedule = () => {
       {isLoading && <LoadingPopup />}
       {user && user.id && user.roomName && (
         <>
-          <TopAppBarHome roomInviteCode={user.roomInviteCode} />
+          <TopAppBarHome
+            roomInviteCode={user.roomInviteCode}
+            notiNumToRead={notiNumToRead}
+          />
           <WrapBox>
             <CalendarDiv>
               {weeklyEvents && (

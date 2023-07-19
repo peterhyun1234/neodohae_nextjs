@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import TopAppBarHome from '@/components/appBar/TopAppBarHome';
 import BottomNavigation from '@/components/navigation/BottomNav';
 import LoadingPopup from '@/components/popup/LoadingPopup';
+import axios from 'axios';
 
 const Todo = () => {
   const { data: session } = useSession();
@@ -15,14 +16,48 @@ const Todo = () => {
   const [user, setUser] = useState<any>(session?.user || null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const [notiNumToRead, setNotiNumToRead] = useState<any>(0);
+
+  const getNotifications = async () => {
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    try {
+      const res = await axios.get(`/notifications/user/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (res) {
+        if (res.status === 200) {
+          const notifications = res.data;
+          let numToRead = 0;
+          for (const noti of notifications) {
+            if (!noti.isRead) {
+              numToRead++;
+            }
+          }
+          setNotiNumToRead(numToRead);
+        }
+      }
+    } catch (error) {
+      console.error('Error reading notifications:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (!session) return;
+    if (!user) return;
+    getNotifications();
+  }, [user]);
+
   useEffect(() => {
     if (!session) return;
     if (!session.user) return;
     setUser(session?.user);
     setIsLoading(false);
   }, [session]);
-
-  useEffect(() => {}, []);
 
   return (
     <div
@@ -34,7 +69,10 @@ const Todo = () => {
       {isLoading && <LoadingPopup />}
       {user && user.id && user.roomName && (
         <>
-          <TopAppBarHome roomInviteCode={user.roomInviteCode} />
+          <TopAppBarHome
+            roomInviteCode={user.roomInviteCode}
+            notiNumToRead={notiNumToRead}
+          />
           <WrapBox>
             <h1>너도해 Todo 페이지</h1>
             <h1>너도해 Todo 페이지</h1>

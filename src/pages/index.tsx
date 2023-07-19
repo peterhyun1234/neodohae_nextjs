@@ -28,6 +28,8 @@ const Home = () => {
   const [user, setUser] = useState<any>(session?.user || null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  const [notiNumToRead, setNotiNumToRead] = useState<any>(0);
+
   const [events, setEvents] = useState<any>([]);
   const [weeklyEvents, setWeeklyEvents] = useState<any>([]);
 
@@ -107,7 +109,37 @@ const Home = () => {
         },
     );
   }
-  
+
+  const getNotifications = async () => {
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    try {
+      const res = await axios.get(
+        `/notifications/user/${user.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      if (res) {
+        if (res.status === 200) {
+          const notifications = res.data;
+          let numToRead = 0;
+          for (const noti of notifications) {
+            if (!noti.isRead) {
+              numToRead++;
+            }
+          }
+          setNotiNumToRead(numToRead);
+        }
+      }
+    } catch (error) {
+      console.error('Error reading notifications:', error);
+    }
+  }
 
   useEffect(() => {
     if (events.length > 0) {
@@ -143,6 +175,8 @@ const Home = () => {
     const roomId = user?.roomId;
     if (!roomId) return;
     getEvents(roomId);
+    getNotifications();
+
     requestNotificationPermissionAndSubscribe();
   }, [user]);
 
@@ -163,7 +197,7 @@ const Home = () => {
       {isLoading && <LoadingPopup />}
       {user && user.id && user.roomName && (
         <>
-          <TopAppBarHome roomInviteCode={user.roomInviteCode} />
+          <TopAppBarHome roomInviteCode={user.roomInviteCode} notiNumToRead={notiNumToRead}/>
           <WrapBox>
             <TempBoxdiv>
               오늘의 할일 표시 영역: 공동 TODO 할당 현황 표시

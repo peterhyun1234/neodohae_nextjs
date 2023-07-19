@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import Styled from 'styled-components';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -17,6 +17,8 @@ const MyPage = () => {
   const router = useRouter();
 
   const [user, setUser] = useState<any>(session?.user || null);
+
+  const [notiNumToRead, setNotiNumToRead] = useState<any>(0);
 
   const handleSignOut = () => {
     signOut();
@@ -51,6 +53,40 @@ const MyPage = () => {
     signOut();
   };
 
+  const getNotifications = async () => {
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    try {
+      const res = await axios.get(`/notifications/user/${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (res) {
+        if (res.status === 200) {
+          const notifications = res.data;
+          let numToRead = 0;
+          for (const noti of notifications) {
+            if (!noti.isRead) {
+              numToRead++;
+            }
+          }
+          setNotiNumToRead(numToRead);
+        }
+      }
+    } catch (error) {
+      console.error('Error reading notifications:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (!session) return;
+    if (!user) return;
+    getNotifications();
+  }, [user]);
+
   useEffect(() => {
     if (!session) return;
     if (!session.user) return;
@@ -66,7 +102,10 @@ const MyPage = () => {
     >
       {user && user.id && user.roomName && (
         <>
-          <TopAppBarHome roomInviteCode={user.roomInviteCode} />
+          <TopAppBarHome
+            roomInviteCode={user.roomInviteCode}
+            notiNumToRead={notiNumToRead}
+          />
           <WrapBox>
             {user && (
               <MyPageDiv>
