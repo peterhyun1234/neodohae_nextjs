@@ -297,8 +297,8 @@ const TitleDiv = Styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 20px;
+  padding-right: 20px;
   margin-bottom: 20px;
 `;
 const Title = Styled.div`

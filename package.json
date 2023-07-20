@@ -46,6 +46,7 @@
     "next-compose-plugins": "^2.2.1",
     "next-pwa": "^5.6.0",
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dom": "18.2.0",
     "react-dropzone": "^14.2.3",
     "react-markdown": "^8.0.5",
@@ -58,6 +59,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.2",
+    "@types/react-beautiful-dnd": "^13.1.4",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.51.0",

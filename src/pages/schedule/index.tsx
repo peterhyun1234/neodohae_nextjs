@@ -236,7 +236,7 @@ const CalendarDiv = Styled.div`
 const TitleDiv = Styled.div`
   text-align: left;
   width: 100%;
-  padding-left: 10px;
+  padding-left: 20px;
   margin-bottom: 20px;
 `;
 const Title = Styled.div`

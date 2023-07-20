@@ -138,7 +138,7 @@ const NotificationPage = () => {
                           {notification.body}
                         </NotificationItemBody>
                         <NotificationItemDate>
-                          {notification.createdAt.toLocaleString()}
+                          {new Date(notification.createdAt).toLocaleDateString('ko-KR')}
                         </NotificationItemDate>
                       </NotiInfoDiv>
                     </NotificationItem>
