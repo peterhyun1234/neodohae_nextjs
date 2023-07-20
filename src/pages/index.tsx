@@ -10,9 +10,11 @@ import TopAppBarHome from '@/components/appBar/TopAppBarHome';
 import Footer from '@/components/footer/Footer';
 import BottomNavigation from '@/components/navigation/BottomNav';
 import LoadingPopup from '@/components/popup/LoadingPopup';
+import VerticalTodoList from '@/containers/todo/VerticalTodoList';
 import WeeklyCalendar from '@/containers/schedule/WeeklyCalendar';
 import MonthlyCalendar from '@/containers/schedule/MonthlyCalendar';
 
+import FormatListNumberedRoundedIcon from '@mui/icons-material/FormatListNumberedRounded';
 import PunchClockRoundedIcon from '@mui/icons-material/PunchClockRounded';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
@@ -20,6 +22,45 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import getConfig from 'next/config';
 const { publicRuntimeConfig } = getConfig();
 const VAPID_PUBLIC_KEY = publicRuntimeConfig.VAPID_PUBLIC_KEY;
+
+const dummyTodoList = [
+{
+  id: 1,
+  title: '빨래',
+  description: '흰색 옷 빨래하기',
+  startTime: '2023-07-20T13:00:00Z',
+  endTime: '2023-07-27T14:00:00Z',
+  status: 'TODO',
+  assignedUserIds: [1, 2],
+},
+{
+  id: 2,
+  title: '청소',
+  description: '각자 방 청소하기',
+  startTime: '2023-07-20T14:00:00Z',
+  endTime: '2023-07-27T15:00:00Z',
+  status: 'TODO',
+  assignedUserIds: [1, 2, 3, 4],
+},
+{
+  id: 3,
+  title: '아침 밥하기',
+  description: '아침 밥하기(랜덤 할당)',
+  startTime: '2023-07-28T15:00:00Z',
+  endTime: '2023-07-28T16:00:00Z',
+  status: 'TODO',
+  assignedUserIds: [1],
+},
+{
+  id: 4,
+  title: '점심 밥하기',
+  description: '점심 밥하기(랜덤 할당)',
+  startTime: '2023-07-29T16:00:00Z',
+  endTime: '2023-07-29T17:00:00Z',
+  status: 'TODO',
+  assignedUserIds: [2],
+},
+];
 
 const Home = () => {
   const { data: session } = useSession();
@@ -29,6 +70,9 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const [notiNumToRead, setNotiNumToRead] = useState<any>(0);
+
+  const [todoList, setTodoList] = useState<any>([]);
+  const [todayTodoList, setTodayTodoList] = useState<any>([]);
 
   const [events, setEvents] = useState<any>([]);
   const [weeklyEvents, setWeeklyEvents] = useState<any>([]);
@@ -51,6 +95,11 @@ const Home = () => {
 
     return after;
   }
+
+  const todoStatusUpdate = async (todoId: number, status: string) => {
+    //TODO: update todo status
+    alert(`todoId: ${todoId}, status: ${status} update 준비 중`);
+  };
 
   const getEvents = async (roomId: number) => {
     if (!session) return;
@@ -108,6 +157,11 @@ const Home = () => {
     );
   }
 
+  const getTodoList = async () => {
+    // TODO: get todo list from server
+    setTodoList(dummyTodoList);
+  };
+
   const getNotifications = async () => {
     if (!session) return;
     const accessToken = (session as any)?.accessToken;
@@ -138,6 +192,22 @@ const Home = () => {
       console.error('Error reading notifications:', error);
     }
   }
+
+  useEffect(() => {
+    if (!todoList || todoList.length === 0) return;
+    const today = [];
+
+    for (const todo of todoList) {
+      if (
+        moment(todo.startTime).isSame(moment(), 'day') ||
+        moment(todo.endTime).isSame(moment(), 'day')
+      ) {
+        today.push(todo);
+      }
+    }
+
+    setTodayTodoList(today);
+  }, [todoList]);
 
   useEffect(() => {
     if (events.length > 0) {
@@ -173,6 +243,7 @@ const Home = () => {
     const roomId = user?.roomId;
     if (!roomId) return;
     getEvents(roomId);
+    getTodoList();
     getNotifications();
 
     requestNotificationPermissionAndSubscribe();
@@ -197,9 +268,45 @@ const Home = () => {
         <>
           <TopAppBarHome roomInviteCode={user.roomInviteCode} notiNumToRead={notiNumToRead}/>
           <WrapBox>
-            <TempBoxdiv>
-              오늘의 할일 표시 영역: 공동 TODO 할당 현황 표시
-            </TempBoxdiv>
+            <TodoDiv>
+              {todayTodoList && (
+                <>
+                  <TitleDiv>
+                    <Title>{' 오늘 할 일'}</Title>
+                    <FunctionDiv>
+                      <FunctionIcon>
+                        <FormatListNumberedRoundedIcon color="inherit" fontSize="inherit" />
+                      </FunctionIcon>
+                      <FunctionText
+                        onClick={() => {
+                          router.push('/todo');
+                        }}
+                      >
+                        {'더보기'}
+                      </FunctionText>
+                    </FunctionDiv>
+                  </TitleDiv>
+                  {todayTodoList.length > 0 ? (
+                    <VerticalTodoList
+                      events={todayTodoList}
+                      todoStatusUpdate={todoStatusUpdate}
+                    />
+                  ) : (
+                    <EmptyDiv>
+                      <ScheduleIcon />
+                      <EmptyText>{'오늘 예정된 To-Do가 없습니다.'}</EmptyText>
+                      <ScheduleAddText
+                        onClick={() => {
+                          router.push('/todo/create');
+                        }}
+                      >
+                        {'새로운 To-Do 등록'}
+                      </ScheduleAddText>
+                    </EmptyDiv>
+                  )}
+                </>
+              )}
+            </TodoDiv>
             <CalendarDiv>
               {weeklyEvents && (
                 <>
@@ -287,10 +394,16 @@ const WrapBox = Styled.div`
     padding-top: 70px;
   }
 `;
+const TodoDiv = Styled.div`
+  width: 100%;
+  display: inline-block;
+  padding-top: 20px;
+  padding-bottom: 20px;
+`;
 const CalendarDiv = Styled.div`
   width: 100%;
   display: inline-block;
-  padding: 20px 0;
+  padding-bottom: 20px;
 `;
 const TitleDiv = Styled.div`
   display: flex;

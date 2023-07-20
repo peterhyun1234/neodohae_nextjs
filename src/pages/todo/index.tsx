@@ -271,8 +271,6 @@ const Todo = () => {
       }
     }
 
-    console.log(today);
-
     setTodayTodoList(today);
   }, [todoList]);
 
@@ -508,6 +506,7 @@ const AddEventWrapper = Styled.div`
   right: 0;
   max-width: 1000px;
   margin: 0 auto;
+  z-index: 100;
 `;
 const AddEventBtn = Styled.div`
   position: absolute;
@@ -522,7 +521,6 @@ const AddEventBtn = Styled.div`
   justify-content: center;
   box-shadow: rgba(0, 0, 0, 0.17) 0px 0px 2px 2px;
   cursor: pointer;
-  z-index: 100;
   @media (max-width: 650px) {
     width: 50px;
     height: 50px;
