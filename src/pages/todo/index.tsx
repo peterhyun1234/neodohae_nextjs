@@ -238,7 +238,7 @@ const Todo = () => {
             endTime: todo.endTime,
             status: todo.status,
             assignedUsers: getAssignedUsers(todo.assignedUserIds),
-          }
+          };
           filtered.push(curTodo);
           break;
         }
@@ -313,7 +313,10 @@ const Todo = () => {
                     <Title>{' 오늘 할 일'}</Title>
                   </TitleDiv>
                   {todayTodoList.length > 0 ? (
-                    <VerticalTodoList events={todayTodoList} todoStatusUpdate={todoStatusUpdate}/>
+                    <VerticalTodoList
+                      events={todayTodoList}
+                      todoStatusUpdate={todoStatusUpdate}
+                    />
                   ) : (
                     <EmptyDiv>
                       <ScheduleIcon />
@@ -382,7 +385,7 @@ const Todo = () => {
                     })}
                   </UserFilterSelect>
                   {filteredTodoList.length > 0 ? (
-                    <TodoKanbanBoard events={filteredTodoList}/>
+                    <TodoKanbanBoard events={filteredTodoList} />
                   ) : (
                     <EmptyDiv>
                       <ScheduleIcon />
@@ -400,13 +403,15 @@ const Todo = () => {
               )}
             </TodoDiv>
           </WrapBox>
-          <AddEventBtn
-            onClick={() => {
-              router.push('/todo/create');
-            }}
-          >
-            <AddIcon />
-          </AddEventBtn>
+          <AddEventWrapper>
+            <AddEventBtn
+              onClick={() => {
+                router.push('/todo/create');
+              }}
+            >
+              <AddIcon />
+            </AddEventBtn>
+          </AddEventWrapper>
         </>
       )}
       <BottomNavigation />
@@ -496,10 +501,18 @@ const ScheduleAddText = Styled.div`
     font-size: 16px;
   }
 `;
-const AddEventBtn = Styled.div`
+const AddEventWrapper = Styled.div`
   position: fixed;
-  bottom: calc(100px + env(safe-area-inset-bottom));
-  right: 100px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 1000px;
+  margin: 0 auto;
+`;
+const AddEventBtn = Styled.div`
+  position: absolute;
+  bottom: calc(50px + env(safe-area-inset-bottom));
+  right: 50px;
   width: 70px;
   height: 70px;
   border-radius: 50%;
