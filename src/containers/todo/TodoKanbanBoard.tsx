@@ -5,9 +5,11 @@ import styled from 'styled-components';
 
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded';
 
 const Column = ({ column, items }: any) => {
   const isEmpty = column.itemIds.length === 0;
+  const isDoing = column.id === 'doing';
   const isDone = column.id === 'done';
   return (
     <Droppable droppableId={String(column.id)} key={`column-${column.id}`}>
@@ -41,13 +43,22 @@ const Column = ({ column, items }: any) => {
                           fontSize="inherit"
                         />
                       ) : (
-                        <CheckCircleOutlineRoundedIcon
-                          color="inherit"
-                          fontSize="inherit"
-                        />
+                        <>
+                          {isDoing ? (
+                            <AutorenewRoundedIcon
+                              color="inherit"
+                              fontSize="inherit"
+                            />
+                          ) : (
+                            <CheckCircleOutlineRoundedIcon
+                              color="inherit"
+                              fontSize="inherit"
+                            />
+                          )}
+                        </>
                       )}
                     </ItemTitleIconDiv>
-                    <ItemTitle>{item.title}</ItemTitle>
+                    <ItemTitle isDone={isDone} isDoing={isDoing}>{item.title}</ItemTitle>
                   </ItemTitleDiv>
                   <ItemDescription>{item.description}</ItemDescription>
                   <ItemUsersDiv>
@@ -249,11 +260,12 @@ const ItemTitleIconDiv = styled.div<{ isDone: boolean }>`
     font-size: 15px;
   }
 `;
-const ItemTitle = styled.div`
+const ItemTitle = styled.div<{ isDone?: boolean, isDoing?: boolean }>`
   text-align: left;
   font-size: 17px;
   font-weight: bold;
   color: #252525;
+  line-height: initial;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: normal;
@@ -261,6 +273,7 @@ const ItemTitle = styled.div`
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   word-break: keep-all;
+  box-shadow: ${(props) => (props.isDone ? 'rgba(88, 198, 205, 0.7) 0px -4px 0px inset' : props.isDoing ? 'rgba(133, 133, 133, 0.4) 0px -4px 0px inset' : 'initial')};
   @media (max-width: 650px) {
     font-size: 15px;
   }
