@@ -59,23 +59,28 @@ const TopAppBarChat = ({ title, user, roommates }: Props) => {
           <RoommateListDiv>
             {roommates?.map((roommate: any, i: number) => (
               <>
-                <Roommate key={roommate.id}>
-                  <ProfileImg
-                    loader={() => roommate.picture}
-                    bordercolor={
-                      roommate.color !== null && roommate.color !== undefined
-                        ? roommate.color
-                        : '#fff'
-                    }
-                    src={roommate.picture}
-                    alt="roommate's picture"
-                    width={30}
-                    height={30}
-                  />
-                  <RoommateName>{roommate.username}</RoommateName>
-                  {roommate.id === user.id && <Self>본인</Self>}
-                </Roommate>
-                {i !== roommates.length - 1 && <RoommateDivier />}
+                {roommate !== undefined && roommate !== null && (
+                  <>
+                    <Roommate key={roommate.id}>
+                      <ProfileImg
+                        loader={() => roommate.picture}
+                        bordercolor={
+                          roommate.color !== null &&
+                          roommate.color !== undefined
+                            ? roommate.color
+                            : '#fff'
+                        }
+                        src={roommate.picture}
+                        alt="roommate's picture"
+                        width={30}
+                        height={30}
+                      />
+                      <RoommateName>{roommate.username}</RoommateName>
+                      {roommate.id === user.id && <Self>본인</Self>}
+                    </Roommate>
+                    {i !== roommates.length - 1 && <RoommateDivier />}
+                  </>
+                )}
               </>
             ))}
           </RoommateListDiv>

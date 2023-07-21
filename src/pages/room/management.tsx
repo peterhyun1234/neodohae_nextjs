@@ -79,11 +79,15 @@ const RoomManagement = () => {
     if (!accessToken) return;
 
     const roomId = user.roomId;
-    const res = await axios.put(`/rooms/id/${roomId}`, { roomName }, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+    const res = await axios.put(
+      `/rooms/id/${roomId}`,
+      { roomName },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    });
+    );
     if (res) {
       if (res.status === 200) {
         const updatedUser = user;
@@ -132,34 +136,42 @@ const RoomManagement = () => {
                 <>
                   <Section>
                     <RoomNameDiv>
-                      {
-                        isReadyToEdit ? (
-                          <>
-                            <TextField
-                              label="룸 이름"
-                              variant="outlined"
-                              value={changingRoomName}
-                              onChange={(e) => setChangingRoomName(e.target.value)}
-                            />
-                            <EditButtonDiv onClick={() => {
+                      {isReadyToEdit ? (
+                        <>
+                          <TextField
+                            label="룸 이름"
+                            variant="outlined"
+                            value={changingRoomName}
+                            onChange={(e) =>
+                              setChangingRoomName(e.target.value)
+                            }
+                          />
+                          <EditButtonDiv
+                            onClick={() => {
                               if (changingRoomName === user.roomName) {
                                 setIsReadyToEdit(false);
                                 setChangingRoomName('');
                                 return;
                               }
                               changeRoomName(changingRoomName);
-                            }}>저장</EditButtonDiv>
-                          </>
-                        ) : (
-                          <>
-                            <RoomName>{'🏠 ' + user.roomName}</RoomName>
-                            <EditButtonDiv onClick={() => {
+                            }}
+                          >
+                            저장
+                          </EditButtonDiv>
+                        </>
+                      ) : (
+                        <>
+                          <RoomName>{'🏠 ' + user.roomName}</RoomName>
+                          <EditButtonDiv
+                            onClick={() => {
                               setIsReadyToEdit(true);
                               setChangingRoomName(user.roomName);
-                            }}>이름 수정</EditButtonDiv>
-                          </>
-                        )
-                      }
+                            }}
+                          >
+                            이름 수정
+                          </EditButtonDiv>
+                        </>
+                      )}
                     </RoomNameDiv>
                   </Section>
                   <Section>
@@ -171,24 +183,34 @@ const RoomManagement = () => {
                         ) : (
                           roommates?.map((roommate: any, i: number) => (
                             <>
-                              <Roommate key={roommate.id}>
-                                <ProfileImg
-                                  loader={() => roommate.picture}
-                                  bordercolor={
-                                    roommate.color !== null &&
-                                    roommate.color !== undefined
-                                      ? roommate.color
-                                      : '#fff'
-                                  }
-                                  src={roommate.picture}
-                                  alt="roommate's picture"
-                                  width={40}
-                                  height={40}
-                                />
-                                <RoommateName>{roommate.username}</RoommateName>
-                                {roommate.id === user.id && <Self>본인</Self>}
-                              </Roommate>
-                              {i !== roommates.length - 1 && <RoommateDivier />}
+                              {roommate !== undefined && roommate !== null && (
+                                <>
+                                  <Roommate key={roommate.id}>
+                                    <ProfileImg
+                                      loader={() => roommate.picture}
+                                      bordercolor={
+                                        roommate.color !== null &&
+                                        roommate.color !== undefined
+                                          ? roommate.color
+                                          : '#fff'
+                                      }
+                                      src={roommate.picture}
+                                      alt="roommate's picture"
+                                      width={40}
+                                      height={40}
+                                    />
+                                    <RoommateName>
+                                      {roommate.username}
+                                    </RoommateName>
+                                    {roommate.id === user.id && (
+                                      <Self>본인</Self>
+                                    )}
+                                  </Roommate>
+                                  {i !== roommates.length - 1 && (
+                                    <RoommateDivier />
+                                  )}
+                                </>
+                              )}
                             </>
                           ))
                         )}

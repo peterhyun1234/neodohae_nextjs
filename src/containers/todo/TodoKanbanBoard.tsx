@@ -18,13 +18,15 @@ const Column = ({ column, items }: any) => {
           isDraggingOver={snapshot.isDraggingOver}
         >
           <ColumnTitle>{column.title}</ColumnTitle>
-          {
-            isEmpty && <EmptyColumn>
-            {'Drag and Drop으로 일정을 추가'}
-          </EmptyColumn>
-          }
+          {isEmpty && (
+            <EmptyColumn>{'Drag and Drop으로 일정을 추가'}</EmptyColumn>
+          )}
           {items.map((item: any, index: number) => (
-            <Draggable key={`item-${item.id}`} draggableId={String(item.id)} index={index}>
+            <Draggable
+              key={`item-${item.id}`}
+              draggableId={String(item.id)}
+              index={index}
+            >
               {(provided: any) => (
                 <Item
                   ref={provided.innerRef}
@@ -33,42 +35,50 @@ const Column = ({ column, items }: any) => {
                 >
                   <ItemTitleDiv>
                     <ItemTitleIconDiv isDone={isDone}>
-                      {
-                        isDone ?
-                        <CheckCircleRoundedIcon color="inherit" fontSize="inherit" />
-                        :
-                        <CheckCircleOutlineRoundedIcon color="inherit" fontSize="inherit" />
-                      }
+                      {isDone ? (
+                        <CheckCircleRoundedIcon
+                          color="inherit"
+                          fontSize="inherit"
+                        />
+                      ) : (
+                        <CheckCircleOutlineRoundedIcon
+                          color="inherit"
+                          fontSize="inherit"
+                        />
+                      )}
                     </ItemTitleIconDiv>
                     <ItemTitle>{item.title}</ItemTitle>
                   </ItemTitleDiv>
                   <ItemDescription>{item.description}</ItemDescription>
                   <ItemUsersDiv>
-                  {
-                    item.assignedUsers.map((user: any, index: number) => {
+                    {item.assignedUsers.map((user: any, index: number) => {
                       return (
-                        <ItemUserDiv key={index}>
-                          <ProfileImg
-                            loader={() => user.picture}
-                            bordercolor={
-                              user.color !== null &&
-                              user.color !== undefined
-                                ? user.color
-                                : '#fff'
-                            }
-                            src={user.picture}
-                            alt="roommate's picture"
-                            width={25}
-                            height={25}
-                          />
-                          <UserName>{user?.username}</UserName>
-                        </ItemUserDiv>
+                        <>
+                          {user !== undefined && user !== null && (
+                            <ItemUserDiv key={index}>
+                              <ProfileImg
+                                loader={() => user.picture}
+                                bordercolor={
+                                  user.color !== null &&
+                                  user.color !== undefined
+                                    ? user.color
+                                    : '#fff'
+                                }
+                                src={user.picture}
+                                alt="roommate's picture"
+                                width={25}
+                                height={25}
+                              />
+                              <UserName>{user?.username}</UserName>
+                            </ItemUserDiv>
+                          )}
+                        </>
                       );
-                    })
-                  }
+                    })}
                   </ItemUsersDiv>
                   <ItemDateDiv>
-                    {new Date(item.startTime).toLocaleDateString('ko-KR')} ~ {new Date(item.endTime).toLocaleDateString('ko-KR')}
+                    {new Date(item.startTime).toLocaleDateString('ko-KR')} ~{' '}
+                    {new Date(item.endTime).toLocaleDateString('ko-KR')}
                   </ItemDateDiv>
                 </Item>
               )}
@@ -80,7 +90,6 @@ const Column = ({ column, items }: any) => {
     </Droppable>
   );
 };
-
 
 const TodoKanbanBoard = ({ events }: any) => {
   const columnsFromBackend = {
@@ -150,7 +159,6 @@ const TodoKanbanBoard = ({ events }: any) => {
       //TODO: update done status
       console.log('columns.done.itemIds', columns.done.itemIds);
     }
-
   }, [columns]);
 
   useEffect(() => {
@@ -165,17 +173,17 @@ const TodoKanbanBoard = ({ events }: any) => {
   }, [events]);
 
   return (
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Container>
-          {Object.values(columns).map((column: any) => (
-            <Column
-              key={column.id}
-              column={column}
-              items={column.itemIds.map((itemId: any) => items[itemId])}
-            />
-          ))}
-        </Container>
-      </DragDropContext>
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Container>
+        {Object.values(columns).map((column: any) => (
+          <Column
+            key={column.id}
+            column={column}
+            items={column.itemIds.map((itemId: any) => items[itemId])}
+          />
+        ))}
+      </Container>
+    </DragDropContext>
   );
 };
 
@@ -185,7 +193,8 @@ const List = styled.div<{ isDraggingOver: boolean }>`
   padding: 8px;
   display: flex;
   flex-direction: column;
-  background-color: ${props => (props.isDraggingOver ? '#d2d0ff' : 'transparent')};
+  background-color: ${(props) =>
+    props.isDraggingOver ? '#d2d0ff' : 'transparent'};
   border-radius: 15px;
 
   @media (min-width: 660px) {
@@ -233,7 +242,7 @@ const ItemTitleIconDiv = styled.div<{ isDone: boolean }>`
   justify-content: center;
   align-items: center;
   margin-right: 10px;
-  color: ${props => (props.isDone ? '#58C6CD' : '#858585')};
+  color: ${(props) => (props.isDone ? '#58C6CD' : '#858585')};
   font-size: 20px;
 
   @media (max-width: 650px) {

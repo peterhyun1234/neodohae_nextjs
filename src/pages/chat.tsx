@@ -195,7 +195,8 @@ const Chat = () => {
                 const time = formatTime(new Date(msg.timestamp));
                 const isMine = user.id === msg.senderId;
                 const isProfileNeeded =
-                  !idx || messages[idx - 1].senderId !== msg.senderId;
+                  (!idx || messages[idx - 1].senderId !== msg.senderId) &&
+                  roommate;
 
                 const currentDate = formatMessageDate(new Date(msg.timestamp));
                 const previousDate =
