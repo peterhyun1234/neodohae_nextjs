@@ -8,9 +8,6 @@ env:
   AWS_REGION: ap-northeast-2
   ECR_REGISTRY: 076831690411.dkr.ecr.ap-northeast-2.amazonaws.com
   ECR_REPOSITORY: neodohae_nextjs
-  EKS_CLUSTER_NAME: peter-cluster
-  DEPLOYMENT_NAME: neodohae-nextjs-deployment
-  CONTAINER_NAME: neodohae-nextjs
 
 jobs:
   build-and-push:
