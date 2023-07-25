@@ -66,7 +66,7 @@ const TopAppBarHome = ({ roomInviteCode, notiNumToRead }: Props) => {
 
   return (
     <WrapBox scrollTop={pageYOffset}>
-      {innerWidth <= 650 ? (
+      {innerWidth <= 720 ? (
         <AppBarDetailDiv>
           <AppBarLeftDiv>
             <LogoBtn alt="Logo" src={LOGO} onClick={() => onClickLogo()} />
@@ -164,7 +164,7 @@ const WrapBox = Styled.div<{ scrollTop: number }>`
     align-items: center;
     z-index: 5;
     
-    @media(max-width: 650px) {
+    @media(max-width: 720px) {
         height: 70px;
     }
 `;
