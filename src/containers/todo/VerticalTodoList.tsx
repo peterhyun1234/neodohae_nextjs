@@ -62,7 +62,7 @@ const WrapBox = Styled.div`
   width: 100%;
   padding-left: 20px;
   padding-right: 20px;
-  padding-bottom: 50px;
+  padding-bottom: 40px;
 `;
 const EventDiv = Styled.div`
   width: 100%;

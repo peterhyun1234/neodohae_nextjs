@@ -102,7 +102,12 @@ const Column = ({ column, items }: any) => {
   );
 };
 
-const TodoKanbanBoard = ({ events }: any) => {
+interface Props {
+  events: any;
+  todoStatusUpdate: any;
+}
+
+const TodoKanbanBoard = ({ events, todoStatusUpdate }: Props) => {
   const columnsFromBackend = {
     ['todo']: {
       id: 'todo',
@@ -146,6 +151,8 @@ const TodoKanbanBoard = ({ events }: any) => {
           itemIds: destItems,
         },
       });
+
+      todoStatusUpdate(removed, destination.droppableId.toUpperCase());
     } else {
       const column = columns[source.droppableId];
       const copiedItems = [...column.itemIds];
@@ -160,17 +167,6 @@ const TodoKanbanBoard = ({ events }: any) => {
       });
     }
   };
-
-  useEffect(() => {
-    if (columns.doing.itemIds.length > 0) {
-      //TODO: update doing status
-      console.log('columns.doing.itemIds', columns.doing.itemIds);
-    }
-    if (columns.done.itemIds.length > 0) {
-      //TODO: update done status
-      console.log('columns.done.itemIds', columns.done.itemIds);
-    }
-  }, [columns]);
 
   useEffect(() => {
     const newItems: any = {};
