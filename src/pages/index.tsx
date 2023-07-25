@@ -197,10 +197,10 @@ const Home = () => {
     if (!todoList || todoList.length === 0) return;
     const today = [];
 
-    for (const todo of todoList) {
+    for(const todo of todoList) {
       if (
-        moment(todo.startTime).isSame(moment(), 'day') ||
-        moment(todo.endTime).isSame(moment(), 'day')
+        moment(todo.startTime).isSameOrBefore(moment(), 'day') &&
+        moment(todo.endTime).isSameOrAfter(moment(), 'day')
       ) {
         today.push(todo);
       }
