@@ -1,7 +1,6 @@
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Styled from 'styled-components';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 
@@ -17,108 +16,6 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 
 import moment from 'moment';
 
-const dummyTodoList = [
-  {
-    id: 1,
-    title: '빨래',
-    description: '흰색 옷 빨래하기',
-    startTime: '2023-07-20T13:00:00Z',
-    endTime: '2023-07-27T14:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [1, 2],
-  },
-  {
-    id: 2,
-    title: '청소',
-    description: '각자 방 청소하기',
-    startTime: '2023-07-20T14:00:00Z',
-    endTime: '2023-07-27T15:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [1, 2, 3, 4],
-  },
-  {
-    id: 3,
-    title: '아침 밥하기',
-    description: '아침 밥하기(랜덤 할당)',
-    startTime: '2023-07-28T15:00:00Z',
-    endTime: '2023-07-28T16:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [1],
-  },
-  {
-    id: 4,
-    title: '점심 밥하기',
-    description: '점심 밥하기(랜덤 할당)',
-    startTime: '2023-07-29T16:00:00Z',
-    endTime: '2023-07-29T17:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [2],
-  },
-  {
-    id: 5,
-    title: '저녁 밥하기',
-    description: '저녁 밥하기(랜덤 할당)',
-    startTime: '2023-07-30T17:00:00Z',
-    endTime: '2023-07-30T18:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [3],
-  },
-  {
-    id: 6,
-    title: '빨래',
-    description: '흰색 옷 빨래하기',
-    startTime: '2023-07-31T18:00:00Z',
-    endTime: '2023-07-31T19:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [4],
-  },
-  {
-    id: 7,
-    title: '청소',
-    description: '각자 방 청소하기',
-    startTime: '2023-08-01T19:00:00Z',
-    endTime: '2023-08-01T20:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [1, 2, 3, 4],
-  },
-  {
-    id: 8,
-    title: '아침 밥하기',
-    description: '아침 밥하기(랜덤 할당)',
-    startTime: '2023-08-02T20:00:00Z',
-    endTime: '2023-08-02T21:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [1],
-  },
-  {
-    id: 9,
-    title: '아침 밥하기',
-    description: '아침 밥하기(랜덤 할당)',
-    startTime: '2023-08-03T21:00:00Z',
-    endTime: '2023-08-03T22:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [2],
-  },
-  {
-    id: 10,
-    title: '아침 밥하기',
-    description: '아침 밥하기(랜덤 할당)',
-    startTime: '2023-08-04T22:00:00Z',
-    endTime: '2023-08-04T23:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [3],
-  },
-  {
-    id: 11,
-    title: '아침 밥하기',
-    description: '아침 밥하기(랜덤 할당)',
-    startTime: '2023-08-05T23:00:00Z',
-    endTime: '2023-08-05T24:00:00Z',
-    status: 'TODO',
-    assignedUserIds: [4],
-  },
-];
-
 const Todo = () => {
   const { data: session } = useSession();
   const router = useRouter();
@@ -133,7 +30,7 @@ const Todo = () => {
 
   const [todoList, setTodoList] = useState<any>([]);
   const [todayTodoList, setTodayTodoList] = useState<any>([]);
-  const [filteredTodoList, setFilteredTodoList] = useState<any>([]);
+  const [filteredTodoList, setFilteredTodoList] = useState<any>(null);
 
   const hexToRgbA = (hex: string, alpha: number) => {
     const currentHex = hex || '#da990e';
@@ -152,8 +49,23 @@ const Todo = () => {
   };
 
   const getTodoList = async () => {
-    // TODO: get todo list from server
-    setTodoList(dummyTodoList);
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+    const roomId = user.roomId;
+
+    await axios
+      .get(`https://api-todos.neodohae.com/todos/room/${roomId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setTodoList(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const getRoommates = async () => {
@@ -177,8 +89,37 @@ const Todo = () => {
   };
 
   const todoStatusUpdate = async (todoId: number, status: string) => {
-    //TODO: update todo status
-    alert(`todoId: ${todoId}, status: ${status} update 준비 중`);
+    if (!todoId) return;
+    if (!status) return;
+    if (status !== 'TODO' && status !== 'DOING' && status !== 'DONE') return;
+
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    if (window.confirm('정말로 To-Do 상태를 변경하시겠습니까?') === false) return;
+
+    try {
+      const res = await axios.put(
+        `https://api-todos.neodohae.com/todos/${todoId}`,
+        {
+          status: status,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      if (res) {
+        if (res.status === 200) {
+          getTodoList();
+        }
+      }
+    }
+    catch (error) {
+      console.error('Error updating todo status:', error);
+    }
   };
 
   const getNotifications = async () => {
@@ -246,7 +187,7 @@ const Todo = () => {
     }
 
     setFilteredTodoList(filtered);
-  }, [selectedRoommateIds]);
+  }, [selectedRoommateIds, todoList]);
 
   useEffect(() => {
     if (roommates && roommates.length > 0) {
@@ -259,15 +200,19 @@ const Todo = () => {
   }, [roommates]);
 
   useEffect(() => {
+    if (!user) return;
     if (!todoList || todoList.length === 0) return;
     const today = [];
+    const userId = user.id;
 
-    for(const todo of todoList) {
-      if (
-        moment(todo.startTime).isSameOrBefore(moment(), 'day') &&
-        moment(todo.endTime).isSameOrAfter(moment(), 'day')
-      ) {
-        today.push(todo);
+    for (const todo of todoList) {
+      if (todo.assignedUserIds.includes(userId)) {
+        if (
+          moment(todo.startTime).isSameOrBefore(moment(), 'day') &&
+          moment(todo.endTime).isSameOrAfter(moment(), 'day')
+        ) {
+          today.push(todo);
+        }
       }
     }
 
@@ -308,7 +253,7 @@ const Todo = () => {
               {todayTodoList && (
                 <>
                   <TitleDiv>
-                    <Title>{' 오늘 할 일'}</Title>
+                    <Title>{' 오늘 내가 할 일'}</Title>
                   </TitleDiv>
                   {todayTodoList.length > 0 ? (
                     <VerticalTodoList
@@ -382,21 +327,25 @@ const Todo = () => {
                       );
                     })}
                   </UserFilterSelect>
-                  {filteredTodoList.length > 0 ? (
-                    <TodoKanbanBoard events={filteredTodoList} />
-                  ) : (
-                    <EmptyDiv>
-                      <ScheduleIcon />
-                      <EmptyText>{'예정된 To-Do가 없습니다.'}</EmptyText>
-                      <ScheduleAddText
-                        onClick={() => {
-                          router.push('/todo/create');
-                        }}
-                      >
-                        {'새로운 To-Do 등록'}
-                      </ScheduleAddText>
-                    </EmptyDiv>
-                  )}
+                  {
+                    filteredTodoList && <>
+                    {filteredTodoList.length > 0 ? (
+                      <TodoKanbanBoard events={filteredTodoList} todoStatusUpdate={todoStatusUpdate}/>
+                    ) : (
+                      <EmptyDiv>
+                        <ScheduleIcon />
+                        <EmptyText>{'예정된 To-Do가 없습니다.'}</EmptyText>
+                        <ScheduleAddText
+                          onClick={() => {
+                            router.push('/todo/create');
+                          }}
+                        >
+                          {'새로운 To-Do 등록'}
+                        </ScheduleAddText>
+                      </EmptyDiv>
+                    )}
+                    </>
+                  }
                 </>
               )}
             </TodoDiv>

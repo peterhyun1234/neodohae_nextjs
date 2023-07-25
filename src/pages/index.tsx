@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Styled from 'styled-components';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import axios from 'axios';
@@ -22,45 +21,6 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import getConfig from 'next/config';
 const { publicRuntimeConfig } = getConfig();
 const VAPID_PUBLIC_KEY = publicRuntimeConfig.VAPID_PUBLIC_KEY;
-
-const dummyTodoList = [
-{
-  id: 1,
-  title: '빨래',
-  description: '흰색 옷 빨래하기',
-  startTime: '2023-07-20T13:00:00Z',
-  endTime: '2023-07-27T14:00:00Z',
-  status: 'TODO',
-  assignedUserIds: [1, 2],
-},
-{
-  id: 2,
-  title: '청소',
-  description: '각자 방 청소하기',
-  startTime: '2023-07-20T14:00:00Z',
-  endTime: '2023-07-27T15:00:00Z',
-  status: 'TODO',
-  assignedUserIds: [1, 2, 3, 4],
-},
-{
-  id: 3,
-  title: '아침 밥하기',
-  description: '아침 밥하기(랜덤 할당)',
-  startTime: '2023-07-28T15:00:00Z',
-  endTime: '2023-07-28T16:00:00Z',
-  status: 'TODO',
-  assignedUserIds: [1],
-},
-{
-  id: 4,
-  title: '점심 밥하기',
-  description: '점심 밥하기(랜덤 할당)',
-  startTime: '2023-07-29T16:00:00Z',
-  endTime: '2023-07-29T17:00:00Z',
-  status: 'TODO',
-  assignedUserIds: [2],
-},
-];
 
 const Home = () => {
   const { data: session } = useSession();
@@ -97,8 +57,37 @@ const Home = () => {
   }
 
   const todoStatusUpdate = async (todoId: number, status: string) => {
-    //TODO: update todo status
-    alert(`todoId: ${todoId}, status: ${status} update 준비 중`);
+    if (!todoId) return;
+    if (!status) return;
+    if (status !== 'TODO' && status !== 'DOING' && status !== 'DONE') return;
+
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+
+    if (window.confirm('정말로 To-Do 상태를 변경하시겠습니까?') === false) return;
+
+    try {
+      const res = await axios.put(
+        `https://api-todos.neodohae.com/todos/${todoId}`,
+        {
+          status: status,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      if (res) {
+        if (res.status === 200) {
+          getTodoList();
+        }
+      }
+    }
+    catch (error) {
+      console.error('Error updating todo status:', error);
+    }
   };
 
   const getEvents = async (roomId: number) => {
@@ -158,8 +147,23 @@ const Home = () => {
   }
 
   const getTodoList = async () => {
-    // TODO: get todo list from server
-    setTodoList(dummyTodoList);
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
+    const roomId = user.roomId;
+
+    await axios
+      .get(`https://api-todos.neodohae.com/todos/room/${roomId}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setTodoList(response.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const getNotifications = async () => {
@@ -194,15 +198,19 @@ const Home = () => {
   }
 
   useEffect(() => {
+    if (!user) return;
     if (!todoList || todoList.length === 0) return;
     const today = [];
+    const userId = user.id;
 
     for(const todo of todoList) {
-      if (
-        moment(todo.startTime).isSameOrBefore(moment(), 'day') &&
-        moment(todo.endTime).isSameOrAfter(moment(), 'day')
-      ) {
-        today.push(todo);
+      if (todo.assignedUserIds.includes(userId)) {
+        if (
+          moment(todo.startTime).isSameOrBefore(moment(), 'day') &&
+          moment(todo.endTime).isSameOrAfter(moment(), 'day')
+        ) {
+          today.push(todo);
+        }
       }
     }
 
@@ -272,7 +280,7 @@ const Home = () => {
               {todayTodoList && (
                 <>
                   <TitleDiv>
-                    <Title>{' 오늘 할 일'}</Title>
+                    <Title>{' 오늘 내가 할 일'}</Title>
                     <FunctionDiv>
                       <FunctionIcon>
                         <FormatListNumberedRoundedIcon color="inherit" fontSize="inherit" />

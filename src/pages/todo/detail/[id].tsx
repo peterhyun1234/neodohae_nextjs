@@ -25,7 +25,7 @@ import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded';
 import DescriptionRoundedIcon from '@mui/icons-material/DescriptionRounded';
 import RepeatRoundedIcon from '@mui/icons-material/RepeatRounded';
 import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded';
-import { de, is, tr } from 'date-fns/locale';
+import PlaylistAddCheckRoundedIcon from '@mui/icons-material/PlaylistAddCheckRounded';
 
 const repeatTypeList = [
   {
@@ -66,6 +66,7 @@ const TodoDetail = () => {
   const [startTime, setStartTime] = useState<string>('');
   const [endTime, setEndTime] = useState<string>('');
   const [endTimeMsg, setEndTimeMsg] = useState<string>('');
+  const [status, setStatus] = useState<string>('TODO');
   const [description, setDescription] = useState<string>('');
 
   const [repeatGroupId, setRepeatGroupId] = useState<number | null>(null);
@@ -90,6 +91,10 @@ const TodoDetail = () => {
     setIsDeletePopupOpen(true);
   };
 
+  const handleDeletePopupClose = () => {
+    setIsDeletePopupOpen(false);
+  };
+
   const isRepeat = () => {
     return repeatType !== 'NONE';
   };
@@ -105,10 +110,6 @@ const TodoDetail = () => {
   };
 
   const onSave = async (isForAll ?: boolean) => {
-    // TODO: isForAll에 따라 다르게 처리
-    // - 이 To-do를 수정하시겠습니까?
-    //   - 이 To-do만 수정
-    //   - 연관된 To-do 모두 수정
     if (!title.trim()) {
       alert('제목을 입력해주세요.');
       return;
@@ -124,8 +125,44 @@ const TodoDetail = () => {
       alert('끝나는 시간이 시작 시간보다 빠를 수 없습니다.');
       return;
     }
-    if (todoId === undefined) {
-      alert('잘못된 스케줄 아이디입니다.');
+
+    const isRepeating = isRepeat();
+    if (isRepeating && !validateDateTimeFormat(repeatEndTime)) {
+      alert('반복 종료 시간이 잘못된 형식입니다.');
+      return;
+    }
+
+    if (isRepeating && new Date(repeatEndTime) <= new Date()) {
+      alert('반복 종료 시간이 현재 시간보다 빠를 수 없습니다.');
+      return;
+    }
+
+    if (isRepeating && new Date(repeatEndTime) <= new Date(startTime)) {
+      alert('반복 종료 시간이 시작 시간보다 빠를 수 없습니다.');
+      return;
+    }
+
+    if (isRandom && !randomUsersNum) {
+      alert('랜덤 지정 인원 수를 입력해주세요.');
+      return;
+    }
+
+    if (isRandom && randomUsersNum && randomUsersNum < 1) {
+      alert('1명 이상 지정해주세요.');
+      return;
+    }
+
+    if (isRandom && randomUsersNum && randomUsersNum > roommates.length) {
+      alert(
+        '룸메이트 수보다 많이 지정할 수 없습니다. (룸메이트: ' +
+          roommates.length +
+          '명)',
+      );
+      return;
+    }
+
+    if (!isRandom && assignedUserIds.length === 0) {
+      alert('지정할 인원을 선택해주세요.');
       return;
     }
 
@@ -138,11 +175,17 @@ const TodoDetail = () => {
       description,
       startTime,
       endTime,
+      status,
+      repeatType,
+      repeatEndTime: isRepeating ? repeatEndTime : null,
+      assignedUserIds: isRandom ? null : assignedUserIds,
+      randomUsersNum: isRandom ? randomUsersNum : null,
+      userId: user.id,
     };
     setIsLoading(true);
     try {
       const res = await axios.put(
-        `https://api-todos.neodohae.com/todos/${todoId}`,
+        `https://api-todos.neodohae.com/todos/${todoId}${isForAll ? '/all' : ''}`,
         { ...todo },
         {
           headers: {
@@ -152,7 +195,7 @@ const TodoDetail = () => {
       );
       if (res) {
         if (res.status === 200) {
-          alert('스케줄이 수정되었습니다.');
+          alert('To-do이 수정되었습니다.');
           setIsLoading(false);
           router.back();
         }
@@ -169,69 +212,41 @@ const TodoDetail = () => {
   const getTodo = async (id: number) => {
     const curId = id;
 
-    const data = {
-      id: 51,
-      title: 'my first todo',
-      description: 'This is my first todo',
-      startTime: '2023-08-04T13:45:50',
-      endTime: '2024-08-10T13:45:50',
-      status: 'TODO',
-      repeatGroupId: null,
-      repeatEndTime: '2030-01-01T12:00:00',
-      repeatType: 'NONE',
-      assignedUserIds: [3],
-      randomUsersNum: null,
-      userId: 3,
-    };
+    if (!session) return;
+    const accessToken = (session as any)?.accessToken;
+    if (!accessToken) return;
 
-    setTodoId(data.id);
-    setTitle(data.title);
-    setDescription(data.description);
-    setStartTime(data.startTime);
-    setEndTime(data.endTime);
-    setRepeatGroupId(data.repeatGroupId);
-    setRepeatType(data.repeatType);
-    setRepeatEndTime(data.repeatEndTime);
-    setAssignedUserIds(data.assignedUserIds);
-    setRandomUsersNum(data.randomUsersNum);
-    setIsRandom(data.randomUsersNum !== null);
-
-    //TODO: api 연결
-    // if (!session) return;
-    // const accessToken = (session as any)?.accessToken;
-    // if (!accessToken) return;
-
-    // setIsLoading(true);
-    // try {
-    //     const res = await axios.get(
-    //         `https://api-todos.neodohae.com/todos/${curId}`,
-    //         {
-    //             headers: {
-    //                 Authorization: `Bearer ${accessToken}`,
-    //             },
-    //         },
-    //     );
-    //     if (res) {
-    //         if (res.status === 200 && res.data) {
-    //             const curTodo = res.data;
-    //             setInputTodo({
-    //                 id: curTodo.id,
-    //                 title: curTodo.title,
-    //                 description: curTodo.description,
-    //                 startTime: curTodo.startTime,
-    //                 endTime: curTodo.endTime,
-
-    //             });
-    //             setIsMine(user.id === curTodo?.userId);
-    //             setIsLoading(false);
-    //         } else {
-    //             alert('스케줄을 불러오는 데 실패했습니다.');
-    //             setIsLoading(false);
-    //         }
-    //     }
-    // } catch (error) {
-    //     console.error('Error reading todo:', error);
-    // }
+    setIsLoading(true);
+    try {
+        const res = await axios.get(
+            `https://api-todos.neodohae.com/todos/${curId}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            },
+        );
+        if (res) {
+            if (res.status === 200) {
+                const data = res.data;
+                setTodoId(data.id);
+                setTitle(data.title);
+                setDescription(data.description);
+                setStartTime(data.startTime);
+                setEndTime(data.endTime);
+                setStatus(data.status);
+                setRepeatGroupId(data.repeatGroupId);
+                setRepeatType(data.repeatType);
+                setRepeatEndTime(data.repeatEndTime);
+                setAssignedUserIds(data.assignedUserIds);
+                setRandomUsersNum(data.randomUsersNum);
+                setIsRandom(data.randomUsersNum !== null);
+            }
+        }
+    } catch (error) {
+        console.error('Error getting todo:', error);
+    }
+    setIsLoading(false);
   };
 
   const getRoommates = async () => {
@@ -255,24 +270,20 @@ const TodoDetail = () => {
   };
 
   const deleteTodo = async (isForAll ?: boolean) => {
-    // TODO: isForAll에 따라 다르게 처리
-    // - 이 To-do를 삭제하시겠습니까?
-    //   - 이 To-do만 삭제
-    //   - 연관된 To-do 모두 삭제
     if (!session) return;
     const accessToken = (session as any)?.accessToken;
     if (!accessToken) return;
 
     if (todoId === undefined) {
-      alert('잘못된 스케줄 아이디입니다.');
+      alert('잘못된 To-do 아이디입니다.');
       return;
     }
 
-    if (window.confirm('정말로 스케줄을 삭제하시겠습니까?')) {
+    if (window.confirm('정말로 To-do를 삭제하시겠습니까?')) {
       setIsLoading(true);
       try {
         const res = await axios.delete(
-          `https://api-todos.neodohae.com/todos/${todoId}`,
+        `https://api-todos.neodohae.com/todos/${todoId}${isForAll ? '/all' : ''}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -281,7 +292,7 @@ const TodoDetail = () => {
         );
         if (res) {
           if (res.status === 200) {
-            alert('스케줄이 삭제되었습니다.');
+            alert('To-do가 삭제되었습니다.');
             setIsLoading(false);
             router.back();
           }
@@ -326,7 +337,8 @@ const TodoDetail = () => {
       getTodo(Number(id));
       getRoommates();
     } else {
-      alert('잘못된 스케줄 아이디입니다.');
+      alert('잘못된 To-do 아이디입니다.');
+      router.back();
     }
   }, [id, user]);
 
@@ -342,7 +354,7 @@ const TodoDetail = () => {
       {title && (
         <>
         {
-          repeatGroupId ? (
+          isRepeat() ? (
             <TopAppBarTodoDetail title={title} deleteTodo={handleClickDeletePopupOpen} />
           ) : (
             <TopAppBarTodoDetail title={title} deleteTodo={deleteTodo} />
@@ -428,6 +440,30 @@ const TodoDetail = () => {
                   />
                   <InputMessage>{endTimeMsg}</InputMessage>
                 </TimeDiv>
+              </InputBox>
+              <InputBoxDivider />
+              <InputBox>
+                <InputBoxIconDiv>
+                  <PlaylistAddCheckRoundedIcon fontSize="inherit" color="inherit" />
+                </InputBoxIconDiv>
+                <InputBoxSelectDiv>
+                  <FormControl fullWidth>
+                    <InputLabel id="status-label">상태 설정</InputLabel>
+                    <Select
+                      labelId="status-label"
+                      id="status"
+                      value={status}
+                      label="상태 설정"
+                      onChange={(e) => {
+                        setStatus(e.target.value as string);
+                      }}
+                    >
+                      <MenuItem value="TODO">할 일</MenuItem>
+                      <MenuItem value="DOING">진행 중</MenuItem>
+                      <MenuItem value="DONE">완료</MenuItem>
+                    </Select>
+                  </FormControl>
+                </InputBoxSelectDiv>
               </InputBox>
               <InputBoxDivider />
               <InputBox>
@@ -625,7 +661,11 @@ const TodoDetail = () => {
                   alert('지정할 인원을 선택해주세요.');
                   return;
                 }
-                handleClickUpdatePopupOpen();
+                if (isRepeat()) {
+                  handleClickUpdatePopupOpen();
+                } else {
+                  onSave();
+                }
               }}
               isActivated={
                 title.trim() &&
@@ -682,23 +722,20 @@ const TodoDetail = () => {
       {
         <Dialog
           open={isDeletePopupOpen}
-          onClose={() => {
-            setIsDeletePopupOpen(false);
-          }
-          }
+          onClose={handleDeletePopupClose}
         >
           <DialogTitle>
             {"이 To-do를 삭제하시겠습니까?"}
           </DialogTitle>
           <DialogContent>
             <DialogContentSelectDiv onClick={() => {
-              setIsDeletePopupOpen(false);
+              handleDeletePopupClose();
               deleteTodo();
             }}>
               이 To-do만 삭제
             </DialogContentSelectDiv>
             <DialogContentSelectDiv onClick={() => {
-              setIsDeletePopupOpen(false);
+              handleDeletePopupClose();
               deleteTodo(true);
             }}>
               연관된 To-do 모두 삭제
@@ -706,7 +743,7 @@ const TodoDetail = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={() => {
-              setIsDeletePopupOpen(false);
+              handleDeletePopupClose();
             }
             }>
               취소
