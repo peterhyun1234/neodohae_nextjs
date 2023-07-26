@@ -20,6 +20,23 @@ jobs:
     - name: Install dependencies
       run: npm install
 
+    - name: Set env
+      run: |
+        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env.production
+        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env.production
+        echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env.production
+        echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env.production
+        echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env.production
+        echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env.production
+        echo "SSO_GITHUB_CLIENT_ID=${{ secrets.SSO_GITHUB_CLIENT_ID }}" >> .env.production
+        echo "SSO_GITHUB_CLIENT_SECRET=${{ secrets.SSO_GITHUB_CLIENT_SECRET }}" >> .env.production
+        echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
+        echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
+        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production
+        echo "API_SERVER_URI=${{ secrets.API_SERVER_URI }}" >> .env.production
+        echo "PORT=${{ secrets.PORT }}" >> .env.production
+        echo "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}" >> .env.production
+
     - name: Run Unit Tests
       run: npm run test:ci
 
@@ -43,20 +60,6 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         IMAGE_TAG: ${{ github.sha }}
       run: |
-        echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env.production
-        echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env.production
-        echo "KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }}" >> .env.production
-        echo "KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }}" >> .env.production
-        echo "NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }}" >> .env.production
-        echo "NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }}" >> .env.production
-        echo "SSO_GITHUB_CLIENT_ID=${{ secrets.SSO_GITHUB_CLIENT_ID }}" >> .env.production
-        echo "SSO_GITHUB_CLIENT_SECRET=${{ secrets.SSO_GITHUB_CLIENT_SECRET }}" >> .env.production
-        echo "NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}" >> .env.production
-        echo "NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}" >> .env.production
-        echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env.production
-        echo "API_SERVER_URI=${{ secrets.API_SERVER_URI }}" >> .env.production
-        echo "PORT=${{ secrets.PORT }}" >> .env.production
-        echo "VAPID_PUBLIC_KEY=${{ secrets.VAPID_PUBLIC_KEY }}" >> .env.production
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 

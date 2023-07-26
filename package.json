@@ -13,7 +13,7 @@
     "pm2": "pm2 list && pm2-runtime start pm2.json",
     "test": "jest --watch --passWithNoTests",
     "test:ci": "jest --ci --passWithNoTests",
-    "cypress:test": "start-server-and-test dev http://localhost:4100 cypress:run",
+    "cypress:test": "start-server-and-test prod http://localhost:4100 cypress:run",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "lint": "eslint .",
