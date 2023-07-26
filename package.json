@@ -11,6 +11,8 @@
     "docker:build": "docker build --pull --rm -f \"Dockerfile\" -t neodohae_nextjs:latest \".\" ",
     "docker:run": "docker run -d -p 4100:4100 neodohae_nextjs",
     "pm2": "pm2 list && pm2-runtime start pm2.json",
+    "test": "jest --watch --passWithNoTests",
+    "test:ci": "jest --ci --passWithNoTests",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepare": "husky install"
@@ -58,17 +60,24 @@
     "styled-components": "^5.3.6"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^14.0.0",
+    "@types/jest": "^29.5.3",
     "@types/jsonwebtoken": "^9.0.2",
     "@types/react-beautiful-dnd": "^13.1.4",
     "@types/smoothscroll-polyfill": "^0.3.1",
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
+    "axios-mock-adapter": "^1.21.5",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "jest": "^29.6.1",
+    "jest-environment-jsdom": "^29.6.1",
     "lint-staged": "^13.1.1",
     "prettier": "2.8.4",
+    "react-testing-library": "^8.0.1",
     "typescript": "^4.9.5"
   }
 }
