@@ -20,8 +20,11 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Run Tests
+    - name: Run Unit Tests
       run: npm run test:ci
+
+    - name: Run E2E Tests
+      run: npm run cypress:test
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1

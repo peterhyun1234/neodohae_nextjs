@@ -13,6 +13,9 @@
     "pm2": "pm2 list && pm2-runtime start pm2.json",
     "test": "jest --watch --passWithNoTests",
     "test:ci": "jest --ci --passWithNoTests",
+    "cypress:test": "start-server-and-test dev http://localhost:4100 cypress:run",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "prepare": "husky install"
@@ -79,6 +82,7 @@
     "lint-staged": "^13.1.1",
     "prettier": "2.8.4",
     "react-testing-library": "^8.0.1",
+    "start-server-and-test": "^2.0.0",
     "typescript": "^4.9.5"
   }
 }
