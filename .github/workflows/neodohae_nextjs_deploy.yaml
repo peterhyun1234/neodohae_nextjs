@@ -17,6 +17,12 @@ jobs:
     - name: Checkout neodohae_nextjs repository
       uses: actions/checkout@v2
 
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run Tests
+      run: npm run test:ci
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
