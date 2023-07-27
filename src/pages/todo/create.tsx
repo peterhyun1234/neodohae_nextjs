@@ -70,6 +70,29 @@ const TodoCreate = () => {
     return repeatType !== 'NONE';
   };
 
+  const getMaxRepeatEndDate = (repeatType: string, startDate: string) => {
+    let maxEndDate = new Date(startDate);
+
+    switch (repeatType) {
+      case 'DAILY':
+        maxEndDate.setDate(maxEndDate.getDate() + 365); // 1년
+        break;
+      case 'WEEKLY':
+        maxEndDate.setDate(maxEndDate.getDate() + 365 * 5); // 5년
+        break;
+      case 'MONTHLY':
+        maxEndDate.setFullYear(maxEndDate.getFullYear() + 5); // 5년
+        break;
+      case 'YEARLY':
+        maxEndDate.setFullYear(maxEndDate.getFullYear() + 30); // 30년
+        break;
+      default:
+        break;
+    }
+
+    return maxEndDate;
+  };
+
   const handleRepeatTypeChange = (event: SelectChangeEvent) => {
     console.log(event.target.value);
     setRepeatType(event.target.value as string);
@@ -111,6 +134,16 @@ const TodoCreate = () => {
     if (isRepeating && new Date(repeatEndTime) <= new Date(startTime)) {
       alert('반복 종료 시간이 시작 시간보다 빠를 수 없습니다.');
       return;
+    }
+
+    if (isRepeating) {
+      const maxEndDate = getMaxRepeatEndDate(repeatType, startTime);
+      if (new Date(repeatEndTime) > maxEndDate) {
+        alert(
+          `반복 종료 시간이 최대 허용 시간을 초과하였습니다. 최대 허용 시간: ${maxEndDate}`,
+        );
+        return;
+      }
     }
 
     if (isRandom && !randomUsersNum) {
@@ -216,7 +249,19 @@ const TodoCreate = () => {
     } else {
       setRepeatEndTimeMsg('');
     }
-  }, [startTime, repeatEndTime]);
+
+    const isRepeating = isRepeat();
+    if (isRepeating) {
+      const maxEndDate = getMaxRepeatEndDate(repeatType, startTime);
+      if (new Date(repeatEndTime) > maxEndDate) {
+        setRepeatEndTimeMsg(
+          `반복 종료 시간이 최대 허용 시간을 초과하였습니다. 최대 허용 시간: ${maxEndDate}`,
+        );
+      } else {
+        setRepeatEndTimeMsg('');
+      }
+    }
+  }, [startTime, repeatEndTime, repeatType]);
 
   useEffect(() => {
     if (!startTime || !endTime) return;
@@ -498,6 +543,16 @@ const TodoCreate = () => {
               return;
             }
 
+            if (isRepeating) {
+              const maxEndDate = getMaxRepeatEndDate(repeatType, startTime);
+              if (new Date(repeatEndTime) > maxEndDate) {
+                alert(
+                  `반복 종료 시간이 최대 허용 시간을 초과하였습니다. 최대 허용 시간: ${maxEndDate}`,
+                );
+                return;
+              }
+            }
+
             if (isRandom && !randomUsersNum) {
               alert('랜덤 지정 인원 수를 입력해주세요.');
               return;
@@ -706,6 +761,7 @@ const ButtonBar = Styled.div`
     padding: 10px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom));
     gap: 10px;
+    z-index: 1;
 `;
 const CancelButton = Styled.button`
     width: 100%;

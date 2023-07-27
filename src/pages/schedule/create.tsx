@@ -304,6 +304,7 @@ const ButtonBar = Styled.div`
     padding: 10px;
     padding-bottom: calc(10px + env(safe-area-inset-bottom));
     gap: 10px;
+    z-index: 1;
 `
 const CancelButton = Styled.button`
     width: 100%;
