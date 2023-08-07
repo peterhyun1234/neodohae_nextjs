@@ -69,14 +69,15 @@ https://neodohae.com/
 
 
 ### 2.3. Monitoring
-http://grafana.neodohae.com/
+- Grafana, Loki, Promtail 기반 서버와 컨테이너의 메트릭, 로그를 수집하고 가시화하고 특정 상황에 맞게 알림 전송
 
 ![image](https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/482a85eb-95af-4b8f-b08c-e8a5dd88541e)
 
 ### 2.4. CI/CD pipeline
-http://argo.neodohae.com/
+- Github actions를 통해서 ECR에 이미지가 저장되고, ArgoCD를 통해서 무중단 배포
 
 ![image](https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/cad3bdee-98ba-4e39-a08b-f1c99693e8eb)
+
 
 ## 3. Service Architecture
 ### 3.1. Infrastructure
