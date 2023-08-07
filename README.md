@@ -1,8 +1,17 @@
-# neodohae_nextjs
+## Service Introduction and Download Guide
+
+<br/>
+
 https://neodohae.com/
 
-## Service Introduction and Download Guide
-- TODO: PWA(푸시알림등) 내용 추가해서 너도해 한줄 설명 필요
+<br/>
+
+서비스 소개 및 다운로드 가이드
+너도해는 룸메이트와의 생활 중 발생할 수 있는 불편함을 최소화하고, 보다 행복한 생활을 지원하기 위해 만들어진 서비스입니다. 이 서비스는 **PWA (Progressive Web App)** 기술을 활용하여 제작되었으므로, 웹 브라우저를 통해 바로 사용할 수 있으면서도, 네이티브 앱처럼 푸시 알림과 같은 기능을 지원합니다.
+
+따라서, 사용자는 아래의 방법을 통해 너도해를 **Desktop/Mobile 어플리케이션**처럼 경험할 수 있습니다.
+
+<br/>
 
 ![image](https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/c325ffce-8c0c-44b3-b984-ef77f2fab8a7)
 
@@ -32,17 +41,22 @@ https://neodohae.com/
 ### 1.1. 개인별 스케줄 공유 및 조율
 - **룸메이트 일정 확인**
 - **공동 활동/중요 일정 조율**
-- TODO: 기능에 대한 gif
+
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/cb65e83e-d923-40c4-b052-08e643ef69c0" width="280" />
+
 
 ### 1.2. 공동 의무 관리 기능
 - **공동 의무 자동 분배**
   - 청소, 설거지와 같은 공동 의무에 할당할 인원을 자동으로 분배 가능
 - **반복 설정**
   - 매일, 매주 등으로 반복되는 할 일에 대해서 반복 설정 가능
-- TODO: 기능에 대한 gif
+
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/a5376534-f7d9-42e0-92a5-e146ab972323" width="280" />
+
 
 ### 1.3. 소통 채널(그룹 채팅) 제공
-- TODO: 기능에 대한 gif
+
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/127c2b3c-abfc-4cb1-b037-37c03d129da9" width="280" />
 
 ## 2. DevOps
 ### 2.1. DevOps pipeline
@@ -68,19 +82,19 @@ http://argo.neodohae.com/
 ## 3. Service Architecture
 ### 3.1. Infrastructure
 
-![Untitled (3)](https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/dd5cec9c-5ff5-4f67-8ac8-706799aa02c8)
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/dd5cec9c-5ff5-4f67-8ac8-706799aa02c8" width="800" alt="Infrastructure">
 
 ### 3.1. API Server Interaction
 
-![Untitled](https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/4aed92da-7187-4668-99ab-811bc2b67dc3)
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/4aed92da-7187-4668-99ab-811bc2b67dc3" width="500" alt="API Server Interaction">
 
-### 3.1. Group(Room) Chatting
+### 3.2. Group(Room) Chatting
 
-![Untitled (1)](https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/0578a306-3eab-4103-baf6-521a68da1ca2)
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/0578a306-3eab-4103-baf6-521a68da1ca2" width="500" alt="Group(Room) Chatting">
 
-### 3.1. Push Notification
+### 3.3. Push Notification
 
-![Untitled (2)](https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/152748e5-549a-46aa-b5c5-540e5cf491bd)
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/152748e5-549a-46aa-b5c5-540e5cf491bd" width="500" alt="Push Notification">
 
 
 ## 4. How to use
