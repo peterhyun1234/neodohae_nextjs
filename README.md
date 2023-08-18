@@ -28,9 +28,10 @@ https://neodohae.com/
   - [2.4. CI/CD pipeline](#24-cicd-pipeline)
 - [3. Service Architecture](#3-service-architecture)
   - [3.1. Infrastructure](#31-infrastructure)
-  - [3.2. API Server Interaction](#32-api-server-interaction)
-  - [3.3. Group Room Chatting](#33-group-room-chatting)
-  - [3.4. Push Notification](#34-push-notification)
+  - [3.2. API Documentation](#32-api-documentation)
+  - [3.3. API Server Interaction](#33-api-server-interaction)
+  - [3.4. Group Room Chatting](#34-group-room-chatting)
+  - [3.5. Push Notification](#35-push-notification)
 - [4. How to use](#4-how-to-use)
 - [Contacts](#contacts)
 
@@ -88,11 +89,16 @@ https://neodohae.com/
 
 <img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/4aed92da-7187-4668-99ab-811bc2b67dc3" width="500" alt="API Server Interaction">
 
-### 3.2. Group(Room) Chatting
+### 3.2. API Documentation
+- Swagger를 통한 REST API 문서화
+
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/46a89353-c4c1-4a2a-9cca-4179e075aa93" width="800" alt="Documentation">
+
+### 3.3. Group(Room) Chatting
 
 <img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/0578a306-3eab-4103-baf6-521a68da1ca2" width="500" alt="Group(Room) Chatting">
 
-### 3.3. Push Notification
+### 3.4. Push Notification
 
 <img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/152748e5-549a-46aa-b5c5-540e5cf491bd" width="500" alt="Push Notification">
 
