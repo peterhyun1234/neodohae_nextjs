@@ -92,7 +92,7 @@ https://neodohae.com/
 ### 3.2. API Documentation
 - Swagger를 통한 REST API 문서화
 
-<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/46a89353-c4c1-4a2a-9cca-4179e075aa93" width="800" alt="Documentation">
+<img src="https://github.com/peterhyun1234/neodohae_nextjs/assets/46476398/46a89353-c4c1-4a2a-9cca-4179e075aa93" width="500" alt="Documentation">
 
 ### 3.3. Group(Room) Chatting
 
